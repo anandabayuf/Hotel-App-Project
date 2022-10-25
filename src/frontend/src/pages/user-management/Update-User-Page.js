@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateUser, getUserById } from "../../api/Users";
+import { createUser, updateUser, getUserById } from "../../api/Users";
 import Loader from "../../components/Loader";
 import MessageToast from "../../components/Message-Toast";
 import UpdateUserForm from "../../components/user-management/Update-User-Form";

@@ -70,6 +70,11 @@ export default function UserListTable(props) {
 													<button
 														className="btn btn-outline-warning"
 														style={style.iconButton}
+														onClick={() =>
+															props.handleUpdateUser(
+																el._id
+															)
+														}
 													>
 														<Pencil size={16} />
 													</button>

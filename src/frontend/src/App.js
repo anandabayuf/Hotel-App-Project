@@ -13,6 +13,7 @@ import CreateCheckoutPage from "./pages/checkout/Create-Checkout-Page";
 import RoomListPage from "./pages/room-management/Room-List-Page";
 import CreateUserPage from "./pages/user-management/Create-User-Page";
 import UserListPage from "./pages/user-management/User-List-Page";
+import UpdateUserPage from "./pages/user-management/Update-User-Page";
 
 const Protected = () => {
 	const [isAuthenticated, setIsAuthenticated] = useState(
@@ -76,10 +77,10 @@ function App() {
 						<Route path="users">
 							<Route index element={<UserListPage />} />
 							<Route path="create" element={<CreateUserPage />} />
-							{/* <Route
+							<Route
 								path="update/:id"
 								element={<UpdateUserPage />}
-							/> */}
+							/>
 						</Route>
 					</Route>
 				</Route>

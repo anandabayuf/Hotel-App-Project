@@ -30,6 +30,21 @@ const searchUser = async (category, value) => {
 	}
 };
 
+const getUserById = async (id) => {
+	try {
+		const response = await fetch(`${BASE_URL}/user/${id}`, {
+			headers: {
+				Authorization: localStorage.getItem("TOKEN"),
+			},
+		});
+		const responseJson = await response.json();
+
+		return responseJson;
+	} catch (err) {
+		alert(err);
+	}
+};
+
 const createUser = async (data) => {
 	try {
 		const response = await fetch(`${BASE_URL}/user`, {
@@ -101,6 +116,7 @@ const deleteUser = async (id) => {
 export {
 	getAllUser,
 	searchUser,
+	getUserById,
 	createUser,
 	updateUser,
 	updateUserStatus,

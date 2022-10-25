@@ -1,7 +1,6 @@
 import { Trash, Pencil } from "react-bootstrap-icons";
 import { Badge } from "react-bootstrap";
 import Loader from "../Loader";
-import { useEffect } from "react";
 import { idrFormat } from "../../utils/Formatter";
 
 export default function RoomListTable(props) {

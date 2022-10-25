@@ -98,6 +98,10 @@ export default function UserListPage() {
 		}, 1000);
 	};
 
+	const handleUpdateUser = (id) => {
+		navigate(`/management/users/update/${id}`);
+	};
+
 	const handleAfterCreateUser = () => {
 		if (location.state) {
 			setToastState(location.state.toastState);
@@ -221,6 +225,7 @@ export default function UserListPage() {
 						isLoading={isLoading}
 						currentIndex={currentIndex}
 						handleChangeStatus={handleChangeStatus}
+						handleUpdateUser={handleUpdateUser}
 					/>
 				) : (
 					<NoData />
