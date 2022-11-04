@@ -1,12 +1,15 @@
 import { BASE_URL } from "./Helper";
 
-const getAllRooms = async () => {
+const getAllRooms = async (page, limit) => {
 	try {
-		const response = await fetch(`${BASE_URL}/room`, {
-			headers: {
-				Authorization: localStorage.getItem("TOKEN"),
-			},
-		});
+		const response = await fetch(
+			`${BASE_URL}/room?page=${page}&limit=${limit}`,
+			{
+				headers: {
+					Authorization: localStorage.getItem("TOKEN"),
+				},
+			}
+		);
 		const responseJson = await response.json();
 
 		return responseJson;
@@ -17,7 +20,7 @@ const getAllRooms = async () => {
 
 const getAvailableRooms = async () => {
 	try {
-		const response = await fetch(`${BASE_URL}/room?status=Available`, {
+		const response = await fetch(`${BASE_URL}/room/available`, {
 			headers: {
 				Authorization: localStorage.getItem("TOKEN"),
 			},
@@ -30,13 +33,16 @@ const getAvailableRooms = async () => {
 	}
 };
 
-const searchRoom = async (category, value) => {
+const searchRoom = async (category, value, page, limit) => {
 	try {
-		const response = await fetch(`${BASE_URL}/room?${category}=${value}`, {
-			headers: {
-				Authorization: localStorage.getItem("TOKEN"),
-			},
-		});
+		const response = await fetch(
+			`${BASE_URL}/room?page=${page}&limit=${limit}&${category}=${value}`,
+			{
+				headers: {
+					Authorization: localStorage.getItem("TOKEN"),
+				},
+			}
+		);
 		const responseJson = await response.json();
 
 		return responseJson;

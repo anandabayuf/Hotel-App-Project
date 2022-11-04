@@ -6,13 +6,13 @@ const userModel = require("../models/user.model");
 
 router.get("", async (req, res) => {
 	try {
-		const users = await userModel.getAll(req.query);
+		const { data, ...rest } = await userModel.getAll(req.query);
 
-		let data = [];
+		let users = [];
 
-		if (users.length > 0) {
-			data = users.map((el) => {
-				const { password, salt, ...rest } = el.toObject();
+		if (data.length > 0) {
+			users = data.map((el) => {
+				const { password, salt, ...rest } = el;
 				return rest;
 			});
 		}
@@ -20,7 +20,8 @@ router.get("", async (req, res) => {
 		res.status(200).json({
 			status: 200,
 			message: "Successfully get all users data",
-			data: data,
+			data: users,
+			...rest,
 		});
 	} catch (err) {
 		res.status(404).json({
@@ -35,7 +36,7 @@ router.get("/:id", async (req, res) => {
 	try {
 		const user = await userModel.getById(req.params.id);
 
-		const { password, salt, ...rest } = user.toObject();
+		const { password, salt, ...rest } = user;
 
 		res.status(200).json({
 			status: 200,
@@ -64,7 +65,7 @@ router.post("/", async (req, res) => {
 	try {
 		const response = await userModel.create(data);
 
-		const { password, salt, ...rest } = response.toObject();
+		const { password, salt, ...rest } = response;
 
 		res.status(201).json({
 			status: 201,
@@ -97,7 +98,7 @@ router.put("/:id", async (req, res) => {
 			req.user.username
 		);
 
-		const { password, salt, ...rest } = user.toObject();
+		const { password, salt, ...rest } = user;
 
 		res.status(201).json({
 			status: 201,
@@ -120,7 +121,7 @@ router.put("/status/:id", async (req, res) => {
 			req.user.username
 		);
 
-		const { password, salt, ...rest } = user.toObject();
+		const { password, salt, ...rest } = user;
 
 		res.status(201).json({
 			status: 201,

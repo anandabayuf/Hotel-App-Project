@@ -5,10 +5,12 @@ const checkoutModel = require("../models/checkout.model");
 
 router.get("", async (req, res) => {
 	try {
+		const { data, ...rest } = await checkoutModel.getAll(req.query);
 		res.status(200).json({
 			status: 200,
 			message: "Successfully get all check out data",
-			data: await checkoutModel.getAll(req.query),
+			data: data,
+			...rest,
 		});
 	} catch (err) {
 		res.status(404).json({

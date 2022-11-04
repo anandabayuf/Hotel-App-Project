@@ -1,24 +1,7 @@
-import { useEffect, useState } from "react";
 import { Badge, Modal } from "react-bootstrap";
 import { idrFormat } from "../../utils/Formatter";
 
 export default function DetailCheckinModal(props) {
-	const [base64String, setBase64String] = useState("");
-
-	useEffect(() => {
-		setBase64String(
-			btoa(
-				new Uint8Array(props.room.picture.data.data).reduce(function (
-					data,
-					byte
-				) {
-					return data + String.fromCharCode(byte);
-				},
-				"")
-			)
-		);
-	}, [props.room]);
-
 	return (
 		<Modal
 			show={props.openDetailCheckinModal}
@@ -143,7 +126,7 @@ export default function DetailCheckinModal(props) {
 					<h5 className="text-center mb-3">Room Information</h5>
 					<div className="mb-3 text-center">
 						<img
-							src={`data:image/png;base64,${base64String}`}
+							src={`data:image/png;base64,${props.room.picture.data}`}
 							width={400}
 							alt="room preview"
 						/>

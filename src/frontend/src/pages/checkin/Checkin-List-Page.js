@@ -12,6 +12,7 @@ import SearchBarCheckin from "../../components/checkin/Search-Bar-Checkin";
 import CheckinListTable from "../../components/checkin/Checkin-List-Table";
 import DetailCheckinModal from "../../components/checkin/Detail-Checkin-Modal";
 import UpdateCheckinStatusModal from "../../components/checkin/Update-Checkin-Status-Modal";
+import Pagination from "../../components/Pagination";
 
 export default function CheckinListPage() {
 	const [checkins, setCheckins] = useState([]);
@@ -37,12 +38,22 @@ export default function CheckinListPage() {
 	const [checkin, setCheckin] = useState({});
 	const [currentIndex, setCurrentIndex] = useState(null);
 
+	const [paginationState, setPaginationState] = useState({
+		numOfRows: 5,
+		currentPage: 1,
+		totalPages: null,
+		totalData: null,
+	});
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const getCheckins = async () => {
 		setIsFetching(true);
-		const response = await getAllCheckins();
+		const response = await getAllCheckins(
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
 		const data = await response.data;
 
 		setIsFetching(false);
@@ -58,6 +69,11 @@ export default function CheckinListPage() {
 			});
 		} else if (response.status === 200) {
 			setCheckins(data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				...toastState,
@@ -119,11 +135,19 @@ export default function CheckinListPage() {
 		});
 	};
 
-	const handleSubmitSearch = async (e) => {
-		setIsFetching(true);
+	const handleSubmitSearch = (e) => {
 		e.preventDefault();
+		searchCheckIns();
+	};
 
-		const response = await searchCheckin(search.category, search.query);
+	const searchCheckIns = async () => {
+		setIsFetching(true);
+		const response = await searchCheckin(
+			search.category,
+			search.query,
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -138,6 +162,11 @@ export default function CheckinListPage() {
 			});
 		} else if (response.status === 200) {
 			setCheckins(response.data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				...toastState,
@@ -213,6 +242,39 @@ export default function CheckinListPage() {
 		}, 5000);
 	};
 
+	const handleChangePaginationState = (e) => {
+		const key = e.target.name;
+		const value = e.target.value;
+
+		setPaginationState({
+			...paginationState,
+			[key]: key === "numOfRows" ? parseInt(value) : value,
+			currentPage: 1,
+		});
+	};
+
+	const handleClickLeftPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage - 1,
+		});
+	};
+
+	const handleClickRightPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage + 1,
+		});
+	};
+
+	useEffect(() => {
+		if (search.query !== "") {
+			searchCheckIns();
+		} else {
+			getCheckins();
+		} //eslint-disable-next-line
+	}, [paginationState.currentPage, paginationState.numOfRows]);
+
 	const style = {
 		page: {
 			padding: "30px",
@@ -239,6 +301,10 @@ export default function CheckinListPage() {
 		},
 		button: {
 			borderRadius: "15px",
+		},
+		iconButton: {
+			borderColor: "#3F72AF",
+			borderRadius: "50px",
 		},
 	};
 
@@ -270,13 +336,28 @@ export default function CheckinListPage() {
 				{isFetching ? (
 					<Loader style={style} />
 				) : checkins.length > 0 ? (
-					<CheckinListTable
-						checkins={checkins}
-						handleClickDetail={handleClickDetail}
-						handleClickUpdateStatus={handleClickUpdateStatus}
-						currentIndex={currentIndex}
-						isLoading={isLoading}
-					/>
+					<>
+						<CheckinListTable
+							checkins={checkins}
+							handleClickDetail={handleClickDetail}
+							handleClickUpdateStatus={handleClickUpdateStatus}
+							currentIndex={currentIndex}
+							isLoading={isLoading}
+						/>
+						<Pagination
+							style={style}
+							paginationState={paginationState}
+							handleChangePaginationState={
+								handleChangePaginationState
+							}
+							handleClickLeftPagination={
+								handleClickLeftPagination
+							}
+							handleClickRightPagination={
+								handleClickRightPagination
+							}
+						/>
+					</>
 				) : (
 					<NoData />
 				)}

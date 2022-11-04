@@ -1,12 +1,15 @@
 import { BASE_URL } from "./Helper";
 
-const getAllCheckout = async () => {
+const getAllCheckout = async (page, limit) => {
 	try {
-		const response = await fetch(`${BASE_URL}/checkout`, {
-			headers: {
-				Authorization: localStorage.getItem("TOKEN"),
-			},
-		});
+		const response = await fetch(
+			`${BASE_URL}/checkout?page=${page}&limit=${limit}`,
+			{
+				headers: {
+					Authorization: localStorage.getItem("TOKEN"),
+				},
+			}
+		);
 		const responseJson = await response.json();
 
 		return responseJson;
@@ -15,10 +18,10 @@ const getAllCheckout = async () => {
 	}
 };
 
-const searchCheckout = async (category, value) => {
+const searchCheckout = async (category, value, page, limit) => {
 	try {
 		const response = await fetch(
-			`${BASE_URL}/checkout?${category}=${value}`,
+			`${BASE_URL}/checkout?page=${page}&limit=${limit}&${category}=${value}`,
 			{
 				headers: {
 					Authorization: localStorage.getItem("TOKEN"),

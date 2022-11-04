@@ -23,8 +23,6 @@ export default function CreateCheckoutPage() {
 	const [customer, setCustomer] = useState({});
 	const [room, setRoom] = useState({});
 
-	const [base64String, setBase64String] = useState("");
-
 	const [isFetching, setIsFetching] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -62,16 +60,6 @@ export default function CreateCheckoutPage() {
 				totalPrice: response.data.totalCost,
 				remains: response.data.remains,
 			});
-			setBase64String(
-				btoa(
-					new Uint8Array(response.data.room.picture.data.data).reduce(
-						function (data, byte) {
-							return data + String.fromCharCode(byte);
-						},
-						""
-					)
-				)
-			);
 		} else {
 			navigate("/transaction/checkin", {
 				state: {
@@ -97,20 +85,34 @@ export default function CreateCheckoutPage() {
 		if (key === "isLate") {
 			value = e.target.checked;
 
-			setCheckOut({
-				...checkOut,
-				late: {
-					...checkOut.late,
-					isLate: value,
-				},
-			});
+			if (!value) {
+				setCheckOut({
+					...checkOut,
+					totalPrice: checkIn.totalCost,
+					remains: 0,
+					late: {
+						...checkOut.late,
+						isLate: value,
+						fine: 0,
+						information: "No Information",
+					},
+				});
+			} else {
+				setCheckOut({
+					...checkOut,
+					late: {
+						...checkOut.late,
+						isLate: value,
+					},
+				});
+			}
 		} else if (key === "repayment") {
 			value = parseInt(e.target.value);
 
 			setCheckOut({
 				...checkOut,
 				[key]: value || 0,
-				change: checkOut.remains - (value || 0),
+				change: (value || 0) - checkOut.remains,
 			});
 		} else if (key === "information") {
 			value = e.target.value;
@@ -318,11 +320,13 @@ export default function CreateCheckoutPage() {
 												Room Information
 											</h6>
 											<div className="mb-3 text-center">
-												<img
-													src={`data:image/png;base64,${base64String}`}
-													width={300}
-													alt="room preview"
-												/>
+												{room.picture && (
+													<img
+														src={`data:image/png;base64,${room.picture.data}`}
+														width={500}
+														alt="room preview"
+													/>
+												)}
 											</div>
 											<div className="row mb-3">
 												<div className="col">
@@ -345,7 +349,14 @@ export default function CreateCheckoutPage() {
 												</div>
 												<div className="col">
 													<h6>Facility</h6>
-													<p>{room.facility}</p>
+													<span
+														style={{
+															whiteSpace:
+																"pre-line",
+														}}
+													>
+														{room.facility}
+													</span>
 												</div>
 											</div>
 										</div>
@@ -479,7 +490,10 @@ export default function CreateCheckoutPage() {
 													<h6>Change</h6>
 													<p>
 														{idrFormat(
-															checkOut.change || 0
+															checkOut.change < 0
+																? 0
+																: checkOut.change ||
+																		0
 														)}
 													</p>
 												</div>
