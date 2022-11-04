@@ -1,12 +1,15 @@
 import { BASE_URL } from "./Helper";
 
-const getAllUser = async () => {
+const getAllUser = async (page, limit) => {
 	try {
-		const response = await fetch(`${BASE_URL}/user`, {
-			headers: {
-				Authorization: localStorage.getItem("TOKEN"),
-			},
-		});
+		const response = await fetch(
+			`${BASE_URL}/user?page=${page}&limit=${limit}`,
+			{
+				headers: {
+					Authorization: localStorage.getItem("TOKEN"),
+				},
+			}
+		);
 		const responseJson = await response.json();
 
 		return responseJson;
@@ -15,13 +18,16 @@ const getAllUser = async () => {
 	}
 };
 
-const searchUser = async (category, value) => {
+const searchUser = async (category, value, page, limit) => {
 	try {
-		const response = await fetch(`${BASE_URL}/user?${category}=${value}`, {
-			headers: {
-				Authorization: localStorage.getItem("TOKEN"),
-			},
-		});
+		const response = await fetch(
+			`${BASE_URL}/user?page=${page}&limit=${limit}&${category}=${value}`,
+			{
+				headers: {
+					Authorization: localStorage.getItem("TOKEN"),
+				},
+			}
+		);
 		const responseJson = await response.json();
 
 		return responseJson;

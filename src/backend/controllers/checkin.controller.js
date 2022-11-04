@@ -5,10 +5,12 @@ const checkinModel = require("../models/checkin.model");
 
 router.get("", async (req, res) => {
 	try {
+		const { data, ...rest } = await checkinModel.getAll(req.query);
 		res.status(200).json({
 			status: 200,
 			message: "Successfully get all check in data",
-			data: await checkinModel.getAll(req.query),
+			data: data,
+			...rest,
 		});
 	} catch (err) {
 		res.status(404).json({

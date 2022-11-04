@@ -12,7 +12,6 @@ export default function UpdateRoomPage() {
 		price: "",
 		facility: "",
 		pictureFromDB: undefined,
-		base64String: "",
 		isEditPicture: false,
 		picture: undefined,
 	});
@@ -50,16 +49,6 @@ export default function UpdateRoomPage() {
 			let data = await response.data;
 
 			data["pictureFromDB"] = data.picture;
-
-			data["base64String"] = btoa(
-				new Uint8Array(data.picture.data.data).reduce(function (
-					data,
-					byte
-				) {
-					return data + String.fromCharCode(byte);
-				},
-				"")
-			);
 
 			data["picture"] = undefined;
 
@@ -140,8 +129,7 @@ export default function UpdateRoomPage() {
 		setIsLoading(true);
 		e.preventDefault();
 
-		let { isEditPicture, pictureFromDB, base64String, picture, ...data } =
-			room;
+		let { isEditPicture, pictureFromDB, picture, ...data } = room;
 
 		if (isEditPicture) {
 			data["picture"] = picture;

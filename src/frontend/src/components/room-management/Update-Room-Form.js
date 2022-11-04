@@ -159,9 +159,10 @@ export default function UpdateRoomForm(props) {
 								>
 									Picture Preview
 								</h6>
-								{!props.room.isEditPicture ? (
+								{!props.room.isEditPicture &&
+								props.room.pictureFromDB ? (
 									<img
-										src={`data:image/png;base64,${props.room.base64String}`}
+										src={`data:image/png;base64,${props.room.pictureFromDB.data}`}
 										width={500}
 										alt="room"
 									/>

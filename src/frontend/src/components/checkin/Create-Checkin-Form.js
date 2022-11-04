@@ -183,13 +183,13 @@ export default function CreateCheckinForm(props) {
 												})}
 										</select>
 									</div>
-									{props.selectedRoom.base64String && (
+									{props.selectedRoom.room && (
 										<div className="text-center">
 											<p style={style.label}>
 												Picture preview
 											</p>
 											<img
-												src={`data:image/png;base64,${props.selectedRoom.base64String}`}
+												src={`data:image/png;base64,${props.selectedRoom.room.picture.data}`}
 												width={500}
 												alt="room"
 											/>

@@ -13,6 +13,7 @@ import DeleteRoomModal from "../../components/room-management/Delete-Room-Modal"
 import MessageToast from "../../components/Message-Toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
+import Pagination from "../../components/Pagination";
 
 export default function RoomListPage() {
 	const [rooms, setRooms] = useState([]);
@@ -37,12 +38,23 @@ export default function RoomListPage() {
 	const [deleteRoomModalState, setDeleteRoomModalState] = useState(false);
 	const [detailRoomModalState, setDetailRoomModalState] = useState(false);
 
+	const [paginationState, setPaginationState] = useState({
+		numOfRows: 5,
+		currentPage: 1,
+		totalPages: null,
+		totalData: null,
+	});
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const getRooms = async () => {
 		setIsFetching(true);
-		const response = await getAllRooms();
+		const response = await getAllRooms(
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
+		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -57,6 +69,11 @@ export default function RoomListPage() {
 			});
 		} else if (response.status === 200) {
 			setRooms(response.data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				show: true,
@@ -134,11 +151,21 @@ export default function RoomListPage() {
 		});
 	};
 
-	const handleSubmitSearch = async (e) => {
-		setIsFetching(true);
+	const handleSubmitSearch = (e) => {
 		e.preventDefault();
+		searchRooms();
+	};
 
-		const response = await searchRoom(search.category, search.query);
+	const searchRooms = async () => {
+		setIsFetching(true);
+
+		const response = await searchRoom(
+			search.category,
+			search.query,
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
+		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -153,6 +180,11 @@ export default function RoomListPage() {
 			});
 		} else if (response.status === 200) {
 			setRooms(response.data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				...toastState,
@@ -249,6 +281,39 @@ export default function RoomListPage() {
 		navigate(`/management/rooms/update/${id}`);
 	};
 
+	const handleChangePaginationState = (e) => {
+		const key = e.target.name;
+		const value = e.target.value;
+
+		setPaginationState({
+			...paginationState,
+			[key]: key === "numOfRows" ? parseInt(value) : value,
+			currentPage: 1,
+		});
+	};
+
+	const handleClickLeftPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage - 1,
+		});
+	};
+
+	const handleClickRightPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage + 1,
+		});
+	};
+
+	useEffect(() => {
+		if (search.query !== "") {
+			searchRooms();
+		} else {
+			getRooms();
+		} //eslint-disable-next-line
+	}, [paginationState.currentPage, paginationState.numOfRows]);
+
 	const style = {
 		page: {
 			padding: "30px",
@@ -275,6 +340,10 @@ export default function RoomListPage() {
 		},
 		loader: {
 			color: "#3F72AF",
+		},
+		iconButton: {
+			borderColor: "#3F72AF",
+			borderRadius: "50px",
 		},
 	};
 
@@ -306,15 +375,30 @@ export default function RoomListPage() {
 				{isFetching ? (
 					<Loader style={style} />
 				) : rooms.length > 0 ? (
-					<RoomListTable
-						rooms={rooms}
-						isLoading={isLoading}
-						currentIndex={currentIndex}
-						handleChangeStatus={handleChangeStatus}
-						handleClickDelete={handleClickDelete}
-						handleClickDetail={handleClickDetail}
-						handleClickUpdate={handleClickUpdate}
-					/>
+					<>
+						<RoomListTable
+							rooms={rooms}
+							isLoading={isLoading}
+							currentIndex={currentIndex}
+							handleChangeStatus={handleChangeStatus}
+							handleClickDelete={handleClickDelete}
+							handleClickDetail={handleClickDetail}
+							handleClickUpdate={handleClickUpdate}
+						/>
+						<Pagination
+							style={style}
+							paginationState={paginationState}
+							handleChangePaginationState={
+								handleChangePaginationState
+							}
+							handleClickLeftPagination={
+								handleClickLeftPagination
+							}
+							handleClickRightPagination={
+								handleClickRightPagination
+							}
+						/>
+					</>
 				) : (
 					<NoData />
 				)}

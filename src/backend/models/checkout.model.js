@@ -21,7 +21,7 @@ exports.create = (data, checkInId, roomId) => {
 };
 
 exports.getAll = (query) => {
-	let { limit, ...search } = query;
+	let { limit = 5, page = 1, ...search } = query;
 
 	const key = Object.keys(search);
 	const value = search[key];
@@ -36,7 +36,7 @@ exports.getAll = (query) => {
 					reject(err);
 				} else {
 					let data = result.map(async (el) => {
-						const { checkInId, ...rest } = el.toObject();
+						const { checkInId, ...rest } = el;
 
 						const checkIn = await checkInModel.getById(checkInId);
 
@@ -46,13 +46,27 @@ exports.getAll = (query) => {
 						};
 					});
 
-					Promise.all(data).then((res) => {
-						resolve(res);
+					Promise.all(data).then(async (res) => {
+						const count = await schema.CheckOutSchema.find({
+							[key]: { $regex: `^${value}`, $options: "i" },
+						})
+							.lean()
+							.count();
+
+						resolve({
+							data: res,
+							totalPages: Math.ceil(count / limit),
+							currentPage: page,
+							totalData: count,
+						});
 					});
 				}
 			}
-		).sort({ checkOutDate: "desc" });
-		//.limit(limit ? limit : 10)
+		)
+			.sort({ checkOutDate: "desc" })
+			.limit(limit * 1)
+			.skip((page - 1) * limit)
+			.lean();
 	});
 };
 
@@ -62,7 +76,7 @@ exports.getById = (id) => {
 			if (err) {
 				reject(err);
 			} else {
-				const { checkInId, ...rest } = result.toObject();
+				const { checkInId, ...rest } = result;
 
 				const checkIn = await checkInModel.getById(checkInId);
 
@@ -71,6 +85,6 @@ exports.getById = (id) => {
 					checkIn,
 				});
 			}
-		});
+		}).lean();
 	});
 };

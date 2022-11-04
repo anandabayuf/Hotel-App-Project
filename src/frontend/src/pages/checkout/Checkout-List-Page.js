@@ -7,6 +7,7 @@ import CheckoutListTable from "../../components/checkout/Checkout-List-Table";
 import NoData from "../../components/No-Data";
 import SearchBarCheckout from "../../components/checkout/Search-Bar-Checkout";
 import DetailCheckoutModal from "../../components/checkout/Detail-Checkout-Modal";
+import Pagination from "../../components/Pagination";
 
 export default function CheckoutListPage() {
 	const [checkouts, setCheckouts] = useState([]);
@@ -30,12 +31,22 @@ export default function CheckoutListPage() {
 
 	const [checkOut, setCheckOut] = useState({});
 
+	const [paginationState, setPaginationState] = useState({
+		numOfRows: 5,
+		currentPage: 1,
+		totalPages: null,
+		totalData: null,
+	});
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const getCheckouts = async () => {
 		setIsFetching(true);
-		const response = await getAllCheckout();
+		const response = await getAllCheckout(
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
 		const data = await response.data;
 
 		setIsFetching(false);
@@ -52,6 +63,11 @@ export default function CheckoutListPage() {
 		} else if (response.status === 200) {
 			setCheckouts(data);
 			setCheckoutsList(data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				...toastState,
@@ -150,6 +166,39 @@ export default function CheckoutListPage() {
 		}, 1000);
 	};
 
+	const handleChangePaginationState = (e) => {
+		const key = e.target.name;
+		const value = e.target.value;
+
+		setPaginationState({
+			...paginationState,
+			[key]: key === "numOfRows" ? parseInt(value) : value,
+			currentPage: 1,
+		});
+	};
+
+	const handleClickLeftPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage - 1,
+		});
+	};
+
+	const handleClickRightPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage + 1,
+		});
+	};
+
+	useEffect(() => {
+		if (search.query !== "") {
+			setCheckoutsList(checkouts);
+		} else {
+			getCheckouts();
+		} //eslint-disable-next-line
+	}, [paginationState.currentPage, paginationState.numOfRows]);
+
 	const style = {
 		page: {
 			padding: "30px",
@@ -177,6 +226,10 @@ export default function CheckoutListPage() {
 		button: {
 			borderRadius: "15px",
 		},
+		iconButton: {
+			borderColor: "#3F72AF",
+			borderRadius: "50px",
+		},
 	};
 
 	return (
@@ -194,10 +247,25 @@ export default function CheckoutListPage() {
 				{isFetching ? (
 					<Loader style={style} />
 				) : checkoutsList.length > 0 ? (
-					<CheckoutListTable
-						checkouts={checkoutsList}
-						handleClickDetail={handleClickDetail}
-					/>
+					<>
+						<CheckoutListTable
+							checkouts={checkoutsList}
+							handleClickDetail={handleClickDetail}
+						/>
+						<Pagination
+							style={style}
+							paginationState={paginationState}
+							handleChangePaginationState={
+								handleChangePaginationState
+							}
+							handleClickLeftPagination={
+								handleClickLeftPagination
+							}
+							handleClickRightPagination={
+								handleClickRightPagination
+							}
+						/>
+					</>
 				) : (
 					<NoData />
 				)}

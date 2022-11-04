@@ -28,7 +28,7 @@ exports.create = (data, roomId) => {
 };
 
 exports.getAll = (query) => {
-	let { limit, ...search } = query;
+	let { limit = 5, page = 1, ...search } = query;
 
 	const key = Object.keys(search);
 	const value = search[key];
@@ -44,25 +44,40 @@ exports.getAll = (query) => {
 					reject(err);
 				} else {
 					let data = result.map(async (el) => {
-						const { roomNo, ...rest } = el.toObject();
-
-						const room = await roomModel.getAll({
+						const { roomNo, ...rest } = el;
+						// console.log(roomNo);
+						const { data, ...datas } = await roomModel.getAll({
 							roomNo: roomNo,
 						});
 
 						return {
 							...rest,
-							room: room[0],
+							room: data[0],
 						};
 					});
 
-					Promise.all(data).then((res) => {
-						resolve(res);
+					Promise.all(data).then(async (res) => {
+						const count = await schema.CheckInSchema.find({
+							status: { $in: ["Checked In", "Done"] },
+							[key]: { $regex: `^${value}`, $options: "i" },
+						})
+							.lean()
+							.count();
+
+						resolve({
+							data: res,
+							totalPages: Math.ceil(count / limit),
+							currentPage: page,
+							totalData: count,
+						});
 					});
 				}
 			}
-		).sort({ checkInDate: "desc" });
-		//.limit(limit ? limit : 10)
+		)
+			.sort({ checkInDate: "desc" })
+			.limit(limit * 1)
+			.skip((page - 1) * limit)
+			.lean();
 	});
 };
 
@@ -72,16 +87,18 @@ exports.getById = (id) => {
 			if (err) {
 				reject(err);
 			} else {
-				const { roomNo, ...rest } = result.toObject();
+				const { roomNo, ...rest } = result;
 
-				const room = await roomModel.getAll({ roomNo: roomNo });
+				const { data, ...datas } = await roomModel.getAll({
+					roomNo: roomNo,
+				});
 
 				resolve({
 					...rest,
-					room: room[0],
+					room: data[0],
 				});
 			}
-		});
+		}).lean();
 	});
 };
 
@@ -125,7 +142,7 @@ exports.editStatus = (id, roomId) => {
 							}
 						}
 					}
-				);
+				).lean();
 			})
 			.catch((err) => reject(err));
 	});

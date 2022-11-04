@@ -25,7 +25,6 @@ export default function CreateCheckinPage() {
 	const [selectedRoom, setSelectedRoom] = useState({
 		roomNo: "",
 		room: null,
-		base64String: "",
 	});
 
 	const [rooms, setRooms] = useState([]);
@@ -129,21 +128,11 @@ export default function CreateCheckinPage() {
 				...selectedRoom,
 				roomNo: e.target.value,
 				room: room,
-				base64String: btoa(
-					new Uint8Array(room.picture.data.data).reduce(function (
-						data,
-						byte
-					) {
-						return data + String.fromCharCode(byte);
-					},
-					"")
-				),
 			});
 		} else {
 			setSelectedRoom({
 				plateNo: "",
 				room: null,
-				base64String: "",
 			});
 		}
 	};

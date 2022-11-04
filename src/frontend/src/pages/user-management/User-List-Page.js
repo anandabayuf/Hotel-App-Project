@@ -12,6 +12,7 @@ import UserListTable from "../../components/user-management/User-List-Table";
 import NoData from "../../components/No-Data";
 import SearchBarUser from "../../components/user-management/Search-Bar-User";
 import DeleteUserModal from "../../components/user-management/Delete-User-Modal";
+import Pagination from "../../components/Pagination";
 
 export default function UserListPage() {
 	const [users, setUsers] = useState([]);
@@ -36,12 +37,24 @@ export default function UserListPage() {
 
 	const [deleteUserModalState, setDeleteUserModalState] = useState(false);
 
+	const [paginationState, setPaginationState] = useState({
+		numOfRows: 5,
+		currentPage: 1,
+		totalPages: null,
+		totalData: null,
+	});
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const getUsers = async () => {
 		setIsFetching(true);
-		const response = await getAllUser();
+		const response = await getAllUser(
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
+
+		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -56,6 +69,11 @@ export default function UserListPage() {
 			});
 		} else if (response.status === 200) {
 			setUsers(response.data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				...toastState,
@@ -161,11 +179,20 @@ export default function UserListPage() {
 		});
 	};
 
-	const handleSubmitSearch = async (e) => {
-		setIsFetching(true);
+	const handleSubmitSearch = (e) => {
 		e.preventDefault();
+		searchUsers();
+	};
 
-		const response = await searchUser(search.category, search.query);
+	const searchUsers = async () => {
+		setIsFetching(true);
+		const response = await searchUser(
+			search.category,
+			search.query,
+			paginationState.currentPage,
+			paginationState.numOfRows
+		);
+		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -180,6 +207,11 @@ export default function UserListPage() {
 			});
 		} else if (response.status === 200) {
 			setUsers(response.data);
+			setPaginationState({
+				...paginationState,
+				totalPages: response.totalPages,
+				totalData: response.totalData,
+			});
 		} else {
 			setToastState({
 				...toastState,
@@ -244,6 +276,39 @@ export default function UserListPage() {
 		}, 5000);
 	};
 
+	const handleChangePaginationState = (e) => {
+		const key = e.target.name;
+		const value = e.target.value;
+
+		setPaginationState({
+			...paginationState,
+			[key]: key === "numOfRows" ? parseInt(value) : value,
+			currentPage: 1,
+		});
+	};
+
+	const handleClickLeftPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage - 1,
+		});
+	};
+
+	const handleClickRightPagination = () => {
+		setPaginationState({
+			...paginationState,
+			currentPage: paginationState.currentPage + 1,
+		});
+	};
+
+	useEffect(() => {
+		if (search.query !== "") {
+			searchUsers();
+		} else {
+			getUsers();
+		} //eslint-disable-next-line
+	}, [paginationState.currentPage, paginationState.numOfRows]);
+
 	const style = {
 		page: {
 			padding: "30px",
@@ -270,6 +335,10 @@ export default function UserListPage() {
 		},
 		button: {
 			borderRadius: "15px",
+		},
+		iconButton: {
+			borderColor: "#3F72AF",
+			borderRadius: "50px",
 		},
 	};
 
@@ -301,14 +370,29 @@ export default function UserListPage() {
 				{isFetching ? (
 					<Loader style={style} />
 				) : users.length > 0 ? (
-					<UserListTable
-						users={users}
-						isLoading={isLoading}
-						currentIndex={currentIndex}
-						handleChangeStatus={handleChangeStatus}
-						handleUpdateUser={handleUpdateUser}
-						handleClickDelete={handleClickDelete}
-					/>
+					<>
+						<UserListTable
+							users={users}
+							isLoading={isLoading}
+							currentIndex={currentIndex}
+							handleChangeStatus={handleChangeStatus}
+							handleUpdateUser={handleUpdateUser}
+							handleClickDelete={handleClickDelete}
+						/>
+						<Pagination
+							style={style}
+							paginationState={paginationState}
+							handleChangePaginationState={
+								handleChangePaginationState
+							}
+							handleClickLeftPagination={
+								handleClickLeftPagination
+							}
+							handleClickRightPagination={
+								handleClickRightPagination
+							}
+						/>
+					</>
 				) : (
 					<NoData />
 				)}

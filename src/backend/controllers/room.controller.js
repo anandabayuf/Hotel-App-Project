@@ -19,10 +19,13 @@ const upload = multer({ storage: storage });
 
 router.get("", async (req, res) => {
 	try {
+		const { data, ...rest } = await roomModel.getAll(req.query);
+
 		res.status(200).json({
 			status: 200,
 			message: "Successfully get all rooms data",
-			data: await roomModel.getAll(req.query),
+			data: data,
+			...rest,
 		});
 	} catch (err) {
 		res.status(404).json({
@@ -32,6 +35,22 @@ router.get("", async (req, res) => {
 		});
 	}
 });
+
+// router.get("/available", async (req, res) => {
+// 	try {
+// 		res.status(200).json({
+// 			status: 200,
+// 			message: "Successfully get all rooms data",
+// 			data: await roomModel.getAllAvailable(),
+// 		});
+// 	} catch (err) {
+// 		res.status(404).json({
+// 			status: 404,
+// 			message: "Failed to get all rooms data",
+// 			detail: err,
+// 		});
+// 	}
+// });
 
 router.get("/:id", async (req, res) => {
 	try {

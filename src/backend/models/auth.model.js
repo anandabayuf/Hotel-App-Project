@@ -44,7 +44,7 @@ exports.authenticate = (data) => {
 			} else {
 				reject("You have entered an invalid username or password");
 			}
-		});
+		}).lean();
 	});
 };
 
