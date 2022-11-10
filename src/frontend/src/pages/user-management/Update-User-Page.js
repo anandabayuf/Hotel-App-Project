@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateUser, getUserById } from "../../api/Users";
 import Loader from "../../components/Loader";
-import MessageToast from "../../components/Message-Toast";
 import UpdateUserForm from "../../components/user-management/Update-User-Form";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function UpdateUserPage() {
+	const dispatch = useDispatch();
 	const [user, setUser] = useState({
 		name: "",
 		role: "",
@@ -16,12 +21,6 @@ export default function UpdateUserPage() {
 
 	const [isFetching, setIsFetching] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const navigate = useNavigate();
 	const { id } = useParams();
@@ -48,18 +47,16 @@ export default function UpdateUserPage() {
 				...response.data,
 			});
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 
 			setTimeout(() => {
-				setToastState({
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -120,19 +117,15 @@ export default function UpdateUserPage() {
 				},
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -150,24 +143,6 @@ export default function UpdateUserPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
-		button: {
-			borderRadius: "20px",
-		},
 	};
 
 	return (
@@ -177,7 +152,7 @@ export default function UpdateUserPage() {
 					Update User
 				</h3>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : (
 					<UpdateUserForm
 						user={user}
@@ -187,10 +162,6 @@ export default function UpdateUserPage() {
 						handleCancel={handleCancel}
 					/>
 				)}
-				<MessageToast
-					toastState={toastState}
-					setToastState={setToastState}
-				/>
 			</div>
 		</div>
 	);

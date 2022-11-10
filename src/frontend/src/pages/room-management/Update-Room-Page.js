@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import MessageToast from "../../components/Message-Toast";
 import { getRoomById, updateRoom } from "../../api/Room";
 import Loader from "../../components/Loader";
 import UpdateRoomForm from "../../components/room-management/Update-Room-Form";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function UpdateRoomPage() {
+	const dispatch = useDispatch();
 	const [room, setRoom] = useState({
 		roomNo: "",
 		type: "Standard",
@@ -20,12 +25,6 @@ export default function UpdateRoomPage() {
 
 	const [isFetching, setIsFetching] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const navigate = useNavigate();
 	const { id } = useParams();
@@ -54,18 +53,16 @@ export default function UpdateRoomPage() {
 
 			setRoom(data);
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 
 			setTimeout(() => {
-				setToastState({
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -160,19 +157,15 @@ export default function UpdateRoomPage() {
 				},
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -190,34 +183,16 @@ export default function UpdateRoomPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
-		button: {
-			borderRadius: "20px",
-		},
 	};
 
 	return (
 		<div className="min-vh-100" style={style.page}>
 			<div className="container">
 				<h3 className="mb-3" style={style.title}>
-					Upate Room
+					Update Room
 				</h3>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : (
 					<UpdateRoomForm
 						room={room}
@@ -228,10 +203,6 @@ export default function UpdateRoomPage() {
 						picPreview={picPreview}
 					/>
 				)}
-				<MessageToast
-					toastState={toastState}
-					setToastState={setToastState}
-				/>
 			</div>
 		</div>
 	);

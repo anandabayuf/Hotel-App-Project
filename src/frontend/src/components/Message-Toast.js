@@ -9,9 +9,7 @@ export default function MessageToast(props) {
 		>
 			<Toast
 				show={props.toastState.show}
-				onClose={() =>
-					props.setToastState({ ...props.toastState, show: false })
-				}
+				onClose={() => props.handleClose()}
 			>
 				<Toast.Header>
 					<strong className="me-auto">

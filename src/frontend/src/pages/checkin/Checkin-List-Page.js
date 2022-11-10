@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../../components/Loader";
-import MessageToast from "../../components/Message-Toast";
 import NoData from "../../components/No-Data";
 import {
 	getAllCheckins,
@@ -13,18 +12,18 @@ import CheckinListTable from "../../components/checkin/Checkin-List-Table";
 import DetailCheckinModal from "../../components/checkin/Detail-Checkin-Modal";
 import UpdateCheckinStatusModal from "../../components/checkin/Update-Checkin-Status-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function CheckinListPage() {
+	const dispatch = useDispatch();
 	const [checkins, setCheckins] = useState([]);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isFetching, setIsFetching] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const [search, setSearch] = useState({
 		query: "",
@@ -75,19 +74,15 @@ export default function CheckinListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -104,15 +99,10 @@ export default function CheckinListPage() {
 
 	const handleAfterCheckIn = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -168,19 +158,15 @@ export default function CheckinListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -216,29 +202,26 @@ export default function CheckinListPage() {
 				},
 			});
 		} else if (response.status === 201) {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getCheckins();
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				...toastState,
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -292,9 +275,6 @@ export default function CheckinListPage() {
 			borderColor: "#DBE2EF",
 			color: "#3F72AF",
 		},
-		loader: {
-			color: "#3F72AF",
-		},
 		card: {
 			border: "none",
 			borderRadius: "20px",
@@ -334,7 +314,7 @@ export default function CheckinListPage() {
 					/>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : checkins.length > 0 ? (
 					<>
 						<CheckinListTable
@@ -362,10 +342,6 @@ export default function CheckinListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
 			{openDetailCheckinModal && (
 				<DetailCheckinModal
 					openDetailCheckinModal={openDetailCheckinModal}

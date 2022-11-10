@@ -33,7 +33,7 @@ export default function RoomListTable(props) {
 						props.rooms.map((el, index) => {
 							return (
 								<tr key={index}>
-									<td scope="row">{el.roomNo}</td>
+									<td>{el.roomNo}</td>
 									<td>{el.type}</td>
 									<td>{idrFormat(el.price)}</td>
 									<td>

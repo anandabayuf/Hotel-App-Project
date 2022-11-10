@@ -2,24 +2,23 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAllCheckout } from "../../api/Checkout";
 import Loader from "../../components/Loader";
-import MessageToast from "../../components/Message-Toast";
 import CheckoutListTable from "../../components/checkout/Checkout-List-Table";
 import NoData from "../../components/No-Data";
 import SearchBarCheckout from "../../components/checkout/Search-Bar-Checkout";
 import DetailCheckoutModal from "../../components/checkout/Detail-Checkout-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function CheckoutListPage() {
+	const dispatch = useDispatch();
 	const [checkouts, setCheckouts] = useState([]);
 	const [checkoutsList, setCheckoutsList] = useState([]);
 
 	const [isFetching, setIsFetching] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const [search, setSearch] = useState({
 		query: "",
@@ -69,19 +68,15 @@ export default function CheckoutListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -98,15 +93,10 @@ export default function CheckoutListPage() {
 
 	const handleAfterCheckout = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -245,7 +235,7 @@ export default function CheckoutListPage() {
 					/>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : checkoutsList.length > 0 ? (
 					<>
 						<CheckoutListTable
@@ -270,10 +260,6 @@ export default function CheckoutListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
 			{openDetailCheckoutModal && (
 				<DetailCheckoutModal
 					openDetailCheckoutModal={openDetailCheckoutModal}

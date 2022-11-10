@@ -10,12 +10,17 @@ import RoomListTable from "../../components/room-management/Room-List-Table";
 import NoData from "../../components/No-Data";
 import Loader from "../../components/Loader";
 import DeleteRoomModal from "../../components/room-management/Delete-Room-Modal";
-import MessageToast from "../../components/Message-Toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function RoomListPage() {
+	const dispatch = useDispatch();
 	const [rooms, setRooms] = useState([]);
 
 	const [currentIndex, setCurrentIndex] = useState(null);
@@ -23,12 +28,6 @@ export default function RoomListPage() {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [isFetching, setIsFetching] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const [search, setSearch] = useState({
 		query: "",
@@ -54,7 +53,6 @@ export default function RoomListPage() {
 			paginationState.currentPage,
 			paginationState.numOfRows
 		);
-		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -75,18 +73,16 @@ export default function RoomListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 
 			setTimeout(() => {
-				setToastState({
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -115,26 +111,26 @@ export default function RoomListPage() {
 				},
 			});
 		} else if (response.status === 201) {
-			setToastState({
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getRooms();
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -165,7 +161,6 @@ export default function RoomListPage() {
 			paginationState.currentPage,
 			paginationState.numOfRows
 		);
-		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
@@ -186,19 +181,15 @@ export default function RoomListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -226,26 +217,26 @@ export default function RoomListPage() {
 				},
 			});
 		} else if (response.status === 204) {
-			setToastState({
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getRooms();
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -255,15 +246,10 @@ export default function RoomListPage() {
 
 	const handleAfterCreateRoom = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -338,9 +324,6 @@ export default function RoomListPage() {
 		button: {
 			borderRadius: "15px",
 		},
-		loader: {
-			color: "#3F72AF",
-		},
 		iconButton: {
 			borderColor: "#3F72AF",
 			borderRadius: "50px",
@@ -373,7 +356,7 @@ export default function RoomListPage() {
 					/>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : rooms.length > 0 ? (
 					<>
 						<RoomListTable
@@ -403,10 +386,6 @@ export default function RoomListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
 			{deleteRoomModalState && (
 				<DeleteRoomModal
 					deleteRoomModalState={deleteRoomModalState}

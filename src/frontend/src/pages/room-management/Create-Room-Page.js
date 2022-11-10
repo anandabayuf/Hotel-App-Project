@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MessageToast from "../../components/Message-Toast";
 import CreateRoomForm from "../../components/room-management/Create-Room-Form";
 import { createRoom } from "../../api/Room";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function CreateRoomPage() {
+	const dispatch = useDispatch();
 	const [room, setRoom] = useState({
 		roomNo: "",
 		type: "Standard",
@@ -16,12 +21,6 @@ export default function CreateRoomPage() {
 	const [picPreview, setPicPreview] = useState("");
 
 	const [isLoading, setIsLoading] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const navigate = useNavigate();
 
@@ -59,7 +58,7 @@ export default function CreateRoomPage() {
 		e.preventDefault();
 
 		const response = await createRoom(room);
-
+		console.log(response);
 		setIsLoading(false);
 
 		if (response.status === 401) {
@@ -83,19 +82,15 @@ export default function CreateRoomPage() {
 				},
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -117,24 +112,6 @@ export default function CreateRoomPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
-		button: {
-			borderRadius: "20px",
-		},
 	};
 
 	return (
@@ -150,10 +127,6 @@ export default function CreateRoomPage() {
 					isLoading={isLoading}
 					handleCancel={handleCancel}
 					picPreview={picPreview}
-				/>
-				<MessageToast
-					toastState={toastState}
-					setToastState={setToastState}
 				/>
 			</div>
 		</div>

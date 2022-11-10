@@ -18,6 +18,9 @@ import CreateRoomPage from "./pages/room-management/Create-Room-Page";
 import UpdateRoomPage from "./pages/room-management/Update-Room-Page";
 import CheckinListPage from "./pages/checkin/Checkin-List-Page";
 import CreateCheckinPage from "./pages/checkin/Create-Checkin-Page";
+import MessageToast from "./components/Message-Toast";
+import { useSelector, useDispatch } from "react-redux";
+import { hideMessageToast } from "./store/actions/Message-Toast-Action";
 
 const Protected = () => {
 	// eslint-disable-next-line
@@ -25,10 +28,18 @@ const Protected = () => {
 		localStorage.getItem("TOKEN")
 	);
 
+	const dispatch = useDispatch();
+	const toastState = useSelector((state) => state.messageToast);
+
+	const handleClose = () => {
+		dispatch(hideMessageToast());
+	};
+
 	return isAuthenticated ? (
 		<>
 			<NavBar />
 			<Outlet />
+			<MessageToast toastState={toastState} handleClose={handleClose} />
 		</>
 	) : (
 		<Navigate to="/login" />

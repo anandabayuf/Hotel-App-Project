@@ -32,7 +32,7 @@ export default function UserListTable(props) {
 						props.users.map((el, index) => {
 							return (
 								<tr key={index}>
-									<td scope="row">{el.username}</td>
+									<td>{el.username}</td>
 									<td>{el.name}</td>
 									<td className="text-center">{el.role}</td>
 									<td className="text-center">

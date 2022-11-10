@@ -73,7 +73,7 @@ export default function NavBar() {
 						to="/transaction/checkin"
 						style={style.title}
 					>
-						Hotel App
+						Hotel Information System
 					</Link>
 				</div>
 			</nav>

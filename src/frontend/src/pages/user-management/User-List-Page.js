@@ -7,14 +7,19 @@ import {
 	updateUserStatus,
 } from "../../api/Users";
 import Loader from "../../components/Loader";
-import MessageToast from "../../components/Message-Toast";
 import UserListTable from "../../components/user-management/User-List-Table";
 import NoData from "../../components/No-Data";
 import SearchBarUser from "../../components/user-management/Search-Bar-User";
 import DeleteUserModal from "../../components/user-management/Delete-User-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
 
 export default function UserListPage() {
+	const dispatch = useDispatch();
 	const [users, setUsers] = useState([]);
 
 	const [isFetching, setIsFetching] = useState(false);
@@ -23,12 +28,6 @@ export default function UserListPage() {
 	const [currentIndex, setCurrentIndex] = useState(null);
 
 	const [user, setUser] = useState({});
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const [search, setSearch] = useState({
 		query: "",
@@ -54,8 +53,6 @@ export default function UserListPage() {
 			paginationState.numOfRows
 		);
 
-		console.log(response);
-
 		setIsFetching(false);
 		if (response.status === 401) {
 			navigate("/login", {
@@ -75,19 +72,15 @@ export default function UserListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -120,26 +113,26 @@ export default function UserListPage() {
 				},
 			});
 		} else if (response.status === 201) {
-			setToastState({
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getUsers();
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message + ". " + response.detail || "",
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message + ". " + response.detail || "",
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -149,15 +142,10 @@ export default function UserListPage() {
 
 	const handleAfterCreateUser = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -213,19 +201,15 @@ export default function UserListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -253,26 +237,26 @@ export default function UserListPage() {
 				},
 			});
 		} else if (response.status === 204) {
-			setToastState({
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getUsers();
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -368,7 +352,7 @@ export default function UserListPage() {
 					/>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : users.length > 0 ? (
 					<>
 						<UserListTable
@@ -397,10 +381,6 @@ export default function UserListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
 			{deleteUserModalState && (
 				<DeleteUserModal
 					deleteUserModalState={deleteUserModalState}
