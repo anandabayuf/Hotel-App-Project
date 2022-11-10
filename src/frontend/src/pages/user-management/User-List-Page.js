@@ -9,7 +9,6 @@ import {
 import Loader from "../../components/Loader";
 import UserListTable from "../../components/user-management/User-List-Table";
 import NoData from "../../components/No-Data";
-import DeleteUserModal from "../../components/user-management/Delete-User-Modal";
 import Pagination from "../../components/Pagination";
 import { useDispatch } from "react-redux";
 import {
@@ -17,6 +16,7 @@ import {
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
 import SearchBar from "../../components/Search-Bar";
+import DeleteModal from "../../components/Delete-Modal";
 
 export default function UserListPage() {
 	const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export default function UserListPage() {
 		category: "username",
 	});
 
-	const [deleteUserModalState, setDeleteUserModalState] = useState(false);
+	const [deleteModalState, setDeleteModalState] = useState(false);
 
 	const [paginationState, setPaginationState] = useState({
 		numOfRows: 5,
@@ -218,12 +218,17 @@ export default function UserListPage() {
 		setUser(user);
 		setCurrentIndex(index);
 
-		setDeleteUserModalState(true);
+		setDeleteModalState(true);
 	};
 
-	const handleDeleteUser = async (id) => {
+	const handleClose = () => {
+		setDeleteModalState(false);
+	};
+
+	const handleDelete = async () => {
+		handleClose();
 		setIsLoading(true);
-		const response = await deleteUser(id);
+		const response = await deleteUser(user._id);
 
 		setIsLoading(false);
 		if (response.status === 401) {
@@ -365,13 +370,17 @@ export default function UserListPage() {
 					<NoData />
 				)}
 			</div>
-			{deleteUserModalState && (
-				<DeleteUserModal
-					deleteUserModalState={deleteUserModalState}
-					setDeleteUserModalState={setDeleteUserModalState}
-					user={user}
-					handleDeleteUser={handleDeleteUser}
-				/>
+			{deleteModalState && (
+				<DeleteModal
+					deleteModalState={deleteModalState}
+					setDeleteModalState={setDeleteModalState}
+					handleClose={handleClose}
+					handleDelete={handleDelete}
+					for="User"
+					identifier="username"
+				>
+					<strong>{user.username}</strong>
+				</DeleteModal>
 			)}
 		</div>
 	);

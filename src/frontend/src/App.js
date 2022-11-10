@@ -100,10 +100,10 @@ function App() {
 					</Route>
 				</Route>
 				<Route path="/login" element={<AccessLoginPageHandler />} />
-				{/* <Route
+				<Route
 					path="*"
-					element={<Navigate to="/transaction/borrows" />}
-				/> */}
+					element={<Navigate to="/transaction/checkin" />}
+				/>
 			</Routes>
 		</BrowserRouter>
 	);

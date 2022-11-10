@@ -1,6 +1,6 @@
 import { Modal } from "react-bootstrap";
 
-export default function DeleteRoomModal(props) {
+export default function DeleteModal(props) {
 	const style = {
 		button: {
 			borderRadius: "15px",
@@ -9,21 +9,21 @@ export default function DeleteRoomModal(props) {
 
 	return (
 		<Modal
-			show={props.deleteRoomModalState}
-			onHide={() => props.setDeleteRoomModalState(false)}
+			show={props.deleteModalState}
+			onHide={() => props.handleClose()}
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
 		>
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-vcenter">
-					Delete Room
+					Delete {props.for}
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<p className="text-center">
-					Are you sure you want to delete the room data with
+					Are you sure you want to delete the {props.for} data with
 					<br />
-					room number: <strong>{props.room.roomNo}</strong>?
+					{props.identifier}: {props.children}?
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
@@ -31,7 +31,7 @@ export default function DeleteRoomModal(props) {
 					<div className="col-auto">
 						<button
 							className="btn btn-outline-dark"
-							onClick={() => props.setDeleteRoomModalState(false)}
+							onClick={() => props.handleClose()}
 							style={style.button}
 						>
 							Cancel
@@ -40,10 +40,7 @@ export default function DeleteRoomModal(props) {
 					<div className="col-auto">
 						<button
 							className="btn btn-danger"
-							onClick={() => {
-								props.setDeleteRoomModalState(false);
-								props.handleDeleteRoom(props.room._id);
-							}}
+							onClick={() => props.handleDelete()}
 							style={style.button}
 						>
 							Delete

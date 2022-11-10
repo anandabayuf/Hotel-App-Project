@@ -8,7 +8,6 @@ import {
 import RoomListTable from "../../components/room-management/Room-List-Table";
 import NoData from "../../components/No-Data";
 import Loader from "../../components/Loader";
-import DeleteRoomModal from "../../components/room-management/Delete-Room-Modal";
 import { useNavigate, useLocation } from "react-router-dom";
 import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
 import Pagination from "../../components/Pagination";
@@ -18,6 +17,7 @@ import {
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
 import SearchBar from "../../components/Search-Bar";
+import DeleteModal from "../../components/Delete-Modal";
 
 export default function RoomListPage() {
 	const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export default function RoomListPage() {
 		category: "roomNo",
 	});
 
-	const [deleteRoomModalState, setDeleteRoomModalState] = useState(false);
+	const [deleteModalState, setDeleteModalState] = useState(false);
 	const [detailRoomModalState, setDetailRoomModalState] = useState(false);
 
 	const [paginationState, setPaginationState] = useState({
@@ -196,13 +196,18 @@ export default function RoomListPage() {
 
 	const handleClickDelete = (room, index) => {
 		setRoom(room);
-		setDeleteRoomModalState(true);
+		setDeleteModalState(true);
 		setCurrentIndex(index);
 	};
 
-	const handleDeleteRoom = async (id) => {
+	const handleClose = () => {
+		setDeleteModalState(false);
+	};
+
+	const handleDelete = async () => {
+		handleClose();
 		setIsLoading(true);
-		const response = await deleteRoom(id);
+		const response = await deleteRoom(room._id);
 
 		setIsLoading(false);
 
@@ -372,13 +377,17 @@ export default function RoomListPage() {
 					<NoData />
 				)}
 			</div>
-			{deleteRoomModalState && (
-				<DeleteRoomModal
-					deleteRoomModalState={deleteRoomModalState}
-					setDeleteRoomModalState={setDeleteRoomModalState}
-					room={room}
-					handleDeleteRoom={handleDeleteRoom}
-				/>
+			{deleteModalState && (
+				<DeleteModal
+					deleteModalState={deleteModalState}
+					setDeleteModalState={setDeleteModalState}
+					handleClose={handleClose}
+					handleDelete={handleDelete}
+					for="Room"
+					identifier="room no"
+				>
+					<strong>{room.roomNo}</strong>
+				</DeleteModal>
 			)}
 			{detailRoomModalState && (
 				<DetailRoomModal
