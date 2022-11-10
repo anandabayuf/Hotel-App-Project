@@ -9,7 +9,6 @@ import {
 import Loader from "../../components/Loader";
 import UserListTable from "../../components/user-management/User-List-Table";
 import NoData from "../../components/No-Data";
-import SearchBarUser from "../../components/user-management/Search-Bar-User";
 import DeleteUserModal from "../../components/user-management/Delete-User-Modal";
 import Pagination from "../../components/Pagination";
 import { useDispatch } from "react-redux";
@@ -17,6 +16,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
 
 export default function UserListPage() {
 	const dispatch = useDispatch();
@@ -325,11 +325,16 @@ export default function UserListPage() {
 					</div>
 				</div>
 				<div className="mb-3">
-					<SearchBarUser
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-					/>
+						for="users"
+					>
+						<option value="username">Username</option>
+						<option value="role">Role</option>
+						<option value="status">Status</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
 					<Loader />

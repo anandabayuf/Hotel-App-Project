@@ -5,7 +5,6 @@ import {
 	searchRoom,
 	updateRoomStatus,
 } from "../../api/Room";
-import SearchBarRoom from "../../components/room-management/Search-Bar-Room";
 import RoomListTable from "../../components/room-management/Room-List-Table";
 import NoData from "../../components/No-Data";
 import Loader from "../../components/Loader";
@@ -18,6 +17,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
 
 export default function RoomListPage() {
 	const dispatch = useDispatch();
@@ -332,11 +332,15 @@ export default function RoomListPage() {
 					</div>
 				</div>
 				<div className="mb-3">
-					<SearchBarRoom
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-					/>
+						for="rooms"
+					>
+						<option value="roomNo">Room Number</option>
+						<option value="status">Status</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
 					<Loader />

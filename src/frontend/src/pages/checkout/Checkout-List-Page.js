@@ -4,7 +4,6 @@ import { getAllCheckout } from "../../api/Checkout";
 import Loader from "../../components/Loader";
 import CheckoutListTable from "../../components/checkout/Checkout-List-Table";
 import NoData from "../../components/No-Data";
-import SearchBarCheckout from "../../components/checkout/Search-Bar-Checkout";
 import DetailCheckoutModal from "../../components/checkout/Detail-Checkout-Modal";
 import Pagination from "../../components/Pagination";
 import { useDispatch } from "react-redux";
@@ -12,6 +11,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
 
 export default function CheckoutListPage() {
 	const dispatch = useDispatch();
@@ -205,11 +205,16 @@ export default function CheckoutListPage() {
 			<div className="container">
 				<h3 style={style.title}>Check Out List</h3>
 				<div className="mb-3">
-					<SearchBarCheckout
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-					/>
+						for="check out"
+					>
+						<option value="roomNo">Room No</option>
+						<option value="customerName">Customer Name</option>
+						<option value="customerId">Customer ID</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
 					<Loader />

@@ -1,4 +1,4 @@
-export default function SearchBarCheckout(props) {
+export default function SearchBar(props) {
 	const style = {
 		input: {
 			borderRadius: "10px",
@@ -22,9 +22,7 @@ export default function SearchBarCheckout(props) {
 						onChange={props.handleChangeSearch}
 						style={style.input}
 					>
-						<option value="roomNo">Room No</option>
-						<option value="customerName">Customer Name</option>
-						<option value="customerId">Customer ID</option>
+						{props.children}
 					</select>
 				</div>
 				<div className="col-6">
@@ -35,7 +33,7 @@ export default function SearchBarCheckout(props) {
 						name="query"
 						value={props.search.query}
 						onChange={props.handleChangeSearch}
-						placeholder={`Search check out data`}
+						placeholder={`Search ${props.for} data`}
 						style={style.input}
 					/>
 				</div>

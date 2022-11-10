@@ -7,7 +7,6 @@ import {
 	searchCheckin,
 	updateCheckinStatus,
 } from "../../api/Checkin";
-import SearchBarCheckin from "../../components/checkin/Search-Bar-Checkin";
 import CheckinListTable from "../../components/checkin/Checkin-List-Table";
 import DetailCheckinModal from "../../components/checkin/Detail-Checkin-Modal";
 import UpdateCheckinStatusModal from "../../components/checkin/Update-Checkin-Status-Modal";
@@ -17,6 +16,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
 
 export default function CheckinListPage() {
 	const dispatch = useDispatch();
@@ -290,11 +290,18 @@ export default function CheckinListPage() {
 					</div>
 				</div>
 				<div className="mb-3">
-					<SearchBarCheckin
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-					/>
+						for="check in"
+					>
+						<option value="roomNo">Room No</option>
+						<option value="customer.name">Customer Name</option>
+						<option value="customer.ID">Customer ID</option>
+						<option value="status">Status</option>
+						<option value="paymentStatus">Payment Status</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
 					<Loader />
