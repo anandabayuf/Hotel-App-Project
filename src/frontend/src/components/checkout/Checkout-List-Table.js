@@ -33,7 +33,10 @@ export default function CheckoutListTable(props) {
 											el.checkOutDate
 										).toLocaleString()}
 									</td>
-									<td>{el.checkIn.room.roomNo}</td>
+									<td>
+										{el.checkIn.roomNo ||
+											el.checkIn.room.roomNo}
+									</td>
 									<td>{el.checkIn.customer.name}</td>
 									<td className="text-center">
 										<button

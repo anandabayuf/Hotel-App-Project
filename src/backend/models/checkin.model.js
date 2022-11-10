@@ -44,14 +44,13 @@ exports.getAll = (query) => {
 					reject(err);
 				} else {
 					let data = result.map(async (el) => {
-						const { roomNo, ...rest } = el;
 						// console.log(roomNo);
 						const { data, ...datas } = await roomModel.getAll({
-							roomNo: roomNo,
+							roomNo: el.roomNo,
 						});
 
 						return {
-							...rest,
+							...el,
 							room: data[0],
 						};
 					});
@@ -87,14 +86,12 @@ exports.getById = (id) => {
 			if (err) {
 				reject(err);
 			} else {
-				const { roomNo, ...rest } = result;
-
 				const { data, ...datas } = await roomModel.getAll({
-					roomNo: roomNo,
+					roomNo: result.roomNo,
 				});
 
 				resolve({
-					...rest,
+					...result,
 					room: data[0],
 				});
 			}
