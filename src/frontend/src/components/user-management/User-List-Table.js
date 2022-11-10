@@ -4,9 +4,6 @@ import Loader from "../Loader";
 
 export default function UserListTable(props) {
 	const style = {
-		loader: {
-			color: "#3F72AF",
-		},
 		button: {
 			borderRadius: "15px",
 		},
@@ -49,7 +46,7 @@ export default function UserListTable(props) {
 									<td>
 										{props.isLoading &&
 										props.currentIndex === index ? (
-											<Loader style={style} />
+											<Loader />
 										) : (
 											<div className="row justify-content-center">
 												<div className="col-auto">

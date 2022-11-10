@@ -3,6 +3,9 @@ import Loader from "../Loader";
 
 export default function CreateCheckoutForm(props) {
 	const style = {
+		title: {
+			color: "#112D4E",
+		},
 		label: {
 			color: "#3F72AF",
 		},

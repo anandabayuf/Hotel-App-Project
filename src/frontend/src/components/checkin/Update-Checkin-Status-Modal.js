@@ -7,6 +7,7 @@ export default function UpdateCheckinStatusModal(props) {
 			borderRadius: "15px",
 		},
 	};
+
 	return (
 		<Modal
 			show={props.updateCheckinStatusModalState}

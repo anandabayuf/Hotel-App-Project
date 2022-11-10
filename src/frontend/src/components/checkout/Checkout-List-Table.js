@@ -2,9 +2,6 @@ import { Eye } from "react-bootstrap-icons";
 
 export default function CheckoutListTable(props) {
 	const style = {
-		loader: {
-			color: "#3F72AF",
-		},
 		button: {
 			borderRadius: "15px",
 		},
