@@ -1,4 +1,15 @@
 export default function SearchBarRoom(props) {
+	const style = {
+		input: {
+			borderRadius: "10px",
+			borderColor: "#DBE2EF",
+			color: "#3F72AF",
+		},
+		button: {
+			borderRadius: "15px",
+		},
+	};
+
 	return (
 		<form onSubmit={props.handleSubmitSearch}>
 			<div className="row justify-content-center align-items-center">
@@ -9,7 +20,7 @@ export default function SearchBarRoom(props) {
 						name="category"
 						value={props.search.category}
 						onChange={props.handleChangeSearch}
-						style={props.style.input}
+						style={style.input}
 					>
 						<option value="roomNo">Room Number</option>
 						<option value="status">Status</option>
@@ -24,14 +35,14 @@ export default function SearchBarRoom(props) {
 						value={props.search.query}
 						onChange={props.handleChangeSearch}
 						placeholder={`Search room data`}
-						style={props.style.input}
+						style={style.input}
 					/>
 				</div>
 				<div className="col-auto">
 					<button
 						type="submit"
 						className="btn btn-outline-info"
-						style={props.style.button}
+						style={style.button}
 					>
 						Search
 					</button>

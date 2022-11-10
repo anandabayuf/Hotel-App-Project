@@ -309,24 +309,8 @@ export default function RoomListPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderColor: "#3F72AF",
-			borderRadius: "50px",
 		},
 	};
 
@@ -352,7 +336,6 @@ export default function RoomListPage() {
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-						style={style}
 					/>
 				</div>
 				{isFetching ? (
@@ -369,7 +352,6 @@ export default function RoomListPage() {
 							handleClickUpdate={handleClickUpdate}
 						/>
 						<Pagination
-							style={style}
 							paginationState={paginationState}
 							handleChangePaginationState={
 								handleChangePaginationState
@@ -392,7 +374,6 @@ export default function RoomListPage() {
 					setDeleteRoomModalState={setDeleteRoomModalState}
 					room={room}
 					handleDeleteRoom={handleDeleteRoom}
-					style={style}
 				/>
 			)}
 			{detailRoomModalState && (

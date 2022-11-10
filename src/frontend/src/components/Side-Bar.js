@@ -18,11 +18,15 @@ export default function SideBar(props) {
 		signOutButton: {
 			borderRadius: "15px",
 		},
+		title: {
+			color: "#112D4E",
+		},
 	};
+
 	return (
 		<Offcanvas show={props.show} onHide={props.handleClose}>
 			<Offcanvas.Header>
-				<Offcanvas.Title style={props.style.title}>
+				<Offcanvas.Title style={style.title}>
 					Hotel Information System
 				</Offcanvas.Title>
 			</Offcanvas.Header>

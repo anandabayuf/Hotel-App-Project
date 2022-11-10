@@ -1,6 +1,12 @@
 import { Modal } from "react-bootstrap";
 
 export default function DeleteRoomModal(props) {
+	const style = {
+		button: {
+			borderRadius: "15px",
+		},
+	};
+
 	return (
 		<Modal
 			show={props.deleteRoomModalState}
@@ -26,7 +32,7 @@ export default function DeleteRoomModal(props) {
 						<button
 							className="btn btn-outline-dark"
 							onClick={() => props.setDeleteRoomModalState(false)}
-							style={props.style.button}
+							style={style.button}
 						>
 							Cancel
 						</button>
@@ -38,7 +44,7 @@ export default function DeleteRoomModal(props) {
 								props.setDeleteRoomModalState(false);
 								props.handleDeleteRoom(props.room._id);
 							}}
-							style={props.style.button}
+							style={style.button}
 						>
 							Delete
 						</button>

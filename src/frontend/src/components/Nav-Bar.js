@@ -46,6 +46,10 @@ export default function NavBar() {
 		title: {
 			color: "#112D4E",
 		},
+		iconList: {
+			display: "flex",
+			justifyContent: "center",
+		},
 		menuButton: {
 			border: "none",
 		},
@@ -63,7 +67,7 @@ export default function NavBar() {
 					style={style.menuButton}
 					onClick={handleShow}
 				>
-					<div style={{ display: "flex", justifyContent: "center" }}>
+					<div style={style.iconList}>
 						<List alignmentBaseline="middle" size={24} />
 					</div>
 				</button>
@@ -82,7 +86,6 @@ export default function NavBar() {
 				show={show}
 				handleClose={handleClose}
 				role={userLoggedIn.role}
-				style={style}
 			/>
 		</>
 	);

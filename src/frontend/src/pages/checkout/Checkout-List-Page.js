@@ -198,28 +198,6 @@ export default function CheckoutListPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
-		button: {
-			borderRadius: "15px",
-		},
-		iconButton: {
-			borderColor: "#3F72AF",
-			borderRadius: "50px",
-		},
 	};
 
 	return (
@@ -231,7 +209,6 @@ export default function CheckoutListPage() {
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-						style={style}
 					/>
 				</div>
 				{isFetching ? (
@@ -243,7 +220,6 @@ export default function CheckoutListPage() {
 							handleClickDetail={handleClickDetail}
 						/>
 						<Pagination
-							style={style}
 							paginationState={paginationState}
 							handleChangePaginationState={
 								handleChangePaginationState

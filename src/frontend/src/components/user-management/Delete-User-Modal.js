@@ -1,6 +1,11 @@
 import { Modal } from "react-bootstrap";
 
 export default function DeleteUserModal(props) {
+	const style = {
+		button: {
+			borderRadius: "15px",
+		},
+	};
 	return (
 		<Modal
 			show={props.deleteUserModalState}
@@ -26,7 +31,7 @@ export default function DeleteUserModal(props) {
 						<button
 							className="btn btn-outline-dark"
 							onClick={() => props.setDeleteUserModalState(false)}
-							style={props.style.button}
+							style={style.button}
 						>
 							Cancel
 						</button>
@@ -38,7 +43,7 @@ export default function DeleteUserModal(props) {
 								props.setDeleteUserModalState(false);
 								props.handleDeleteUser(props.user._id);
 							}}
-							style={props.style.button}
+							style={style.button}
 						>
 							Delete
 						</button>
