@@ -43,7 +43,7 @@ export default function CheckinListTable(props) {
 									<td>
 										{new Date(el.dueDate).toLocaleString()}
 									</td>
-									<td>{el.room.roomNo}</td>
+									<td>{el.roomNo}</td>
 									<td>{el.customer.name}</td>
 									<td>{idrFormat(el.totalCost)}</td>
 									<td className="text-center">

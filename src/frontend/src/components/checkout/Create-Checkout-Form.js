@@ -86,47 +86,9 @@ export default function CreateCheckoutForm(props) {
 											: `${props.checkIn.lengthOfStay} days`}
 									</p>
 								</div>
-							</div>
-							<h6
-								style={{
-									textDecoration: "underline",
-								}}
-							>
-								Room Information
-							</h6>
-							<div className="mb-3 text-center">
-								{props.room.picture && (
-									<img
-										src={`data:image/png;base64,${props.room.picture.data}`}
-										width={500}
-										alt="room preview"
-									/>
-								)}
-							</div>
-							<div className="row mb-3">
 								<div className="col">
 									<h6>Room No</h6>
-									<p>{props.room.roomNo}</p>
-								</div>
-								<div className="col">
-									<h6>Price</h6>
-									<p>{idrFormat(props.room.price || 0)}</p>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col">
-									<h6>Type</h6>
-									<p>{props.room.type}</p>
-								</div>
-								<div className="col">
-									<h6>Facility</h6>
-									<span
-										style={{
-											whiteSpace: "pre-line",
-										}}
-									>
-										{props.room.facility}
-									</span>
+									<p>{props.checkIn.roomNo}</p>
 								</div>
 							</div>
 						</div>
@@ -298,6 +260,13 @@ export default function CreateCheckoutForm(props) {
 								className="btn btn-success shadow"
 								type="submit"
 								style={style.button}
+								disabled={
+									(props.checkOut.late.isLate &&
+										(props.checkOut.late.information ===
+											"" ||
+											props.checkOut.late.fine === "")) ||
+									props.checkOut.repayment === ""
+								}
 							>
 								Check Out
 							</button>

@@ -85,7 +85,7 @@ export default function SideBar(props) {
 						</Accordion.Body>
 					</Accordion.Item>
 					<Accordion.Item eventKey="2">
-						<Accordion.Header>About</Accordion.Header>
+						<Accordion.Header>Settings</Accordion.Header>
 						<Accordion.Body>
 							<Nav className="flex-column">
 								<li className="nav-item">
@@ -94,7 +94,16 @@ export default function SideBar(props) {
 										to="transaction/checkin"
 										onClick={props.handleClose}
 									>
-										About The App
+										My Profile
+									</Link>
+								</li>
+								<li className="nav-item">
+									<Link
+										className="nav-link"
+										to="transaction/checkin"
+										onClick={props.handleClose}
+									>
+										About Us
 									</Link>
 								</li>
 							</Nav>

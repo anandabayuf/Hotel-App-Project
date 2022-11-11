@@ -79,6 +79,7 @@ export default function NavBar() {
 					>
 						Hotel Information System
 					</Link>
+					<div style={style.title}>Hello, {userLoggedIn.name}!</div>
 				</div>
 			</nav>
 

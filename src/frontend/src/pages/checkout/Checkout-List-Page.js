@@ -25,8 +25,7 @@ export default function CheckoutListPage() {
 		category: "roomNo",
 	});
 
-	const [openDetailCheckoutModal, setOpenDetailCheckoutModal] =
-		useState(false);
+	const [detailModalState, setDetailModalState] = useState(false);
 
 	const [checkOut, setCheckOut] = useState({});
 
@@ -88,7 +87,11 @@ export default function CheckoutListPage() {
 
 	const handleClickDetail = (data) => {
 		setCheckOut(data);
-		setOpenDetailCheckoutModal(true);
+		setDetailModalState(true);
+	};
+
+	const handleCloseDetailModal = () => {
+		setDetailModalState(false);
 	};
 
 	const handleAfterCheckout = () => {
@@ -127,7 +130,7 @@ export default function CheckoutListPage() {
 			switch (search.category) {
 				case "roomNo":
 					result =
-						el.checkIn.room.roomNo
+						el.checkIn.roomNo
 							.toLowerCase()
 							.indexOf(search.query.toLocaleLowerCase()) > -1;
 					break;
@@ -241,13 +244,12 @@ export default function CheckoutListPage() {
 					<NoData />
 				)}
 			</div>
-			{openDetailCheckoutModal && (
+			{detailModalState && (
 				<DetailCheckoutModal
-					openDetailCheckoutModal={openDetailCheckoutModal}
-					setOpenDetailCheckoutModal={setOpenDetailCheckoutModal}
+					detailModalState={detailModalState}
+					handleCloseDetailModal={handleCloseDetailModal}
 					checkOut={checkOut}
 					checkIn={checkOut.checkIn}
-					room={checkOut.checkIn.room}
 				/>
 			)}
 		</div>

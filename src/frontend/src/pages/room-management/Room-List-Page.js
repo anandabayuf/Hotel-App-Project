@@ -9,7 +9,6 @@ import RoomListTable from "../../components/room-management/Room-List-Table";
 import NoData from "../../components/No-Data";
 import Loader from "../../components/Loader";
 import { useNavigate, useLocation } from "react-router-dom";
-import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
 import Pagination from "../../components/Pagination";
 import { useDispatch } from "react-redux";
 import {
@@ -18,6 +17,7 @@ import {
 } from "../../store/actions/Message-Toast-Action";
 import SearchBar from "../../components/Search-Bar";
 import DeleteModal from "../../components/Delete-Modal";
+import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
 
 export default function RoomListPage() {
 	const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export default function RoomListPage() {
 	});
 
 	const [deleteModalState, setDeleteModalState] = useState(false);
-	const [detailRoomModalState, setDetailRoomModalState] = useState(false);
+	const [detailModalState, setDetailModalState] = useState(false);
 
 	const [paginationState, setPaginationState] = useState({
 		numOfRows: 5,
@@ -200,12 +200,12 @@ export default function RoomListPage() {
 		setCurrentIndex(index);
 	};
 
-	const handleClose = () => {
+	const handleCloseDeleteModal = () => {
 		setDeleteModalState(false);
 	};
 
 	const handleDelete = async () => {
-		handleClose();
+		handleCloseDeleteModal();
 		setIsLoading(true);
 		const response = await deleteRoom(room._id);
 
@@ -265,7 +265,11 @@ export default function RoomListPage() {
 
 	const handleClickDetail = (room) => {
 		setRoom(room);
-		setDetailRoomModalState(true);
+		setDetailModalState(true);
+	};
+
+	const handleCloseDetailModal = () => {
+		setDetailModalState(false);
 	};
 
 	const handleClickUpdate = (id) => {
@@ -381,7 +385,7 @@ export default function RoomListPage() {
 				<DeleteModal
 					deleteModalState={deleteModalState}
 					setDeleteModalState={setDeleteModalState}
-					handleClose={handleClose}
+					handleClose={handleCloseDeleteModal}
 					handleDelete={handleDelete}
 					for="Room"
 					identifier="room no"
@@ -389,10 +393,10 @@ export default function RoomListPage() {
 					<strong>{room.roomNo}</strong>
 				</DeleteModal>
 			)}
-			{detailRoomModalState && (
+			{detailModalState && (
 				<DetailRoomModal
-					detailRoomModalState={detailRoomModalState}
-					setDetailRoomModalState={setDetailRoomModalState}
+					detailModalState={detailModalState}
+					handleCloseDetailModal={handleCloseDetailModal}
 					room={room}
 				/>
 			)}

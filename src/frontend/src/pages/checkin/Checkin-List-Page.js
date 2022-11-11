@@ -30,7 +30,7 @@ export default function CheckinListPage() {
 		category: "roomNo",
 	});
 
-	const [openDetailCheckinModal, setOpenDetailCheckinModal] = useState(false);
+	const [detailModalState, setDetailModalState] = useState(false);
 	const [updateCheckinStatusModalState, setUpdateCheckinStatusModalState] =
 		useState(false);
 
@@ -94,7 +94,11 @@ export default function CheckinListPage() {
 
 	const handleClickDetail = (data) => {
 		setCheckin(data);
-		setOpenDetailCheckinModal(true);
+		setDetailModalState(true);
+	};
+
+	const handleCloseDetailModal = () => {
+		setDetailModalState(false);
 	};
 
 	const handleAfterCheckIn = () => {
@@ -331,12 +335,11 @@ export default function CheckinListPage() {
 					<NoData />
 				)}
 			</div>
-			{openDetailCheckinModal && (
+			{detailModalState && (
 				<DetailCheckinModal
-					openDetailCheckinModal={openDetailCheckinModal}
-					setOpenDetailCheckinModal={setOpenDetailCheckinModal}
+					detailModalState={detailModalState}
+					handleCloseDetailModal={handleCloseDetailModal}
 					checkIn={checkin}
-					room={checkin.room}
 				/>
 			)}
 			{updateCheckinStatusModalState && (

@@ -24,8 +24,7 @@ export default function UpdateCheckinStatusModal(props) {
 				<div className="mb-3 text-center">
 					<p>
 						Are you sure you want to update the check in status with
-						<br /> room no:{" "}
-						<strong>{props.checkin.room.roomNo}</strong>?
+						<br /> room no: <strong>{props.checkin.roomNo}</strong>?
 					</p>
 				</div>
 				<div className="mb-3 row justify-content-center">

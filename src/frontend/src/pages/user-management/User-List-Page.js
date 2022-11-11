@@ -221,12 +221,12 @@ export default function UserListPage() {
 		setDeleteModalState(true);
 	};
 
-	const handleClose = () => {
+	const handleCloseDeleteModal = () => {
 		setDeleteModalState(false);
 	};
 
 	const handleDelete = async () => {
-		handleClose();
+		handleCloseDeleteModal();
 		setIsLoading(true);
 		const response = await deleteUser(user._id);
 
@@ -374,7 +374,7 @@ export default function UserListPage() {
 				<DeleteModal
 					deleteModalState={deleteModalState}
 					setDeleteModalState={setDeleteModalState}
-					handleClose={handleClose}
+					handleClose={handleCloseDeleteModal}
 					handleDelete={handleDelete}
 					for="User"
 					identifier="username"

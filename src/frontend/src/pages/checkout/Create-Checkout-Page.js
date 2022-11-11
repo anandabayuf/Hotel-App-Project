@@ -19,14 +19,13 @@ export default function CreateCheckoutPage() {
 		remains: "",
 		late: {
 			isLate: false,
-			information: "-",
-			fine: "-",
+			information: "",
+			fine: "",
 		},
 	});
 
 	const [checkIn, setCheckIn] = useState({});
 	const [customer, setCustomer] = useState({});
-	const [room, setRoom] = useState({});
 
 	const [isFetching, setIsFetching] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +51,6 @@ export default function CreateCheckoutPage() {
 			});
 		} else if (response.status === 200) {
 			setCheckIn(response.data);
-			setRoom(response.data.room);
 			setCustomer(response.data.customer);
 			setCheckOut({
 				...checkOut,
@@ -144,10 +142,10 @@ export default function CreateCheckoutPage() {
 
 		let { remains, ...rest } = checkOut;
 		rest["checkInId"] = checkIn._id;
-		rest["roomId"] = room._id;
+		rest["roomId"] = checkIn.roomId;
 
 		if (!rest["late"]["isLate"]) {
-			rest["late"]["information"] = "No Information";
+			rest["late"]["information"] = "Is Not Late";
 			rest["late"]["fine"] = 0;
 		}
 
@@ -213,13 +211,11 @@ export default function CreateCheckoutPage() {
 					<Loader />
 				) : (
 					checkIn &&
-					customer &&
-					room && (
+					customer && (
 						<CreateCheckoutForm
 							checkOut={checkOut}
 							customer={customer}
 							checkIn={checkIn}
-							room={room}
 							isLoading={isLoading}
 							handleChange={handleChange}
 							handleCancel={handleCancel}

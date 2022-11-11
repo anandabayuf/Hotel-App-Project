@@ -39,36 +39,22 @@ exports.getAll = (query) => {
 				status: { $in: ["Checked In", "Done"] },
 				[key]: { $regex: `^${value}`, $options: "i" },
 			},
-			(err, result) => {
+			async (err, result) => {
 				if (err) {
 					reject(err);
 				} else {
-					let data = result.map(async (el) => {
-						// console.log(roomNo);
-						const { data, ...datas } = await roomModel.getAll({
-							roomNo: el.roomNo,
-						});
+					const count = await schema.CheckInSchema.find({
+						status: { $in: ["Checked In", "Done"] },
+						[key]: { $regex: `^${value}`, $options: "i" },
+					})
+						.lean()
+						.count();
 
-						return {
-							...el,
-							room: data[0],
-						};
-					});
-
-					Promise.all(data).then(async (res) => {
-						const count = await schema.CheckInSchema.find({
-							status: { $in: ["Checked In", "Done"] },
-							[key]: { $regex: `^${value}`, $options: "i" },
-						})
-							.lean()
-							.count();
-
-						resolve({
-							data: res,
-							totalPages: Math.ceil(count / limit),
-							currentPage: page,
-							totalData: count,
-						});
+					resolve({
+						data: result,
+						totalPages: Math.ceil(count / limit),
+						currentPage: page,
+						totalData: count,
 					});
 				}
 			}
@@ -92,7 +78,7 @@ exports.getById = (id) => {
 
 				resolve({
 					...result,
-					room: data[0],
+					roomId: data[0]._id,
 				});
 			}
 		}).lean();
