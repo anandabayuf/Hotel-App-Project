@@ -40,7 +40,7 @@ export default function SearchBar(props) {
 				<div className="col-auto">
 					<button
 						type="submit"
-						className="btn btn-outline-info"
+						className="btn btn-outline-dark"
 						style={style.button}
 					>
 						Search

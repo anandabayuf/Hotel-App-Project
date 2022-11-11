@@ -1,4 +1,3 @@
-import { Trash, Pencil, Eye } from "react-bootstrap-icons";
 import { Badge } from "react-bootstrap";
 import Loader from "../Loader";
 import { idrFormat } from "../../utils/Formatter";
@@ -7,9 +6,6 @@ export default function RoomListTable(props) {
 	const style = {
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderRadius: "50px",
 		},
 	};
 
@@ -52,15 +48,15 @@ export default function RoomListTable(props) {
 											<div className="row justify-content-center">
 												<div className="col-auto">
 													<button
-														className="btn btn-info"
-														style={style.iconButton}
+														className="btn btn-light"
+														style={style.button}
 														onClick={() =>
 															props.handleClickDetail(
 																el
 															)
 														}
 													>
-														<Eye size={16} />
+														View
 													</button>
 												</div>
 												<div className="col-auto">
@@ -80,20 +76,20 @@ export default function RoomListTable(props) {
 												<div className="col-auto">
 													<button
 														className="btn btn-warning"
-														style={style.iconButton}
+														style={style.button}
 														onClick={() =>
 															props.handleClickUpdate(
 																el._id
 															)
 														}
 													>
-														<Pencil size={16} />
+														Update
 													</button>
 												</div>
 												<div className="col-auto">
 													<button
 														className="btn btn-danger"
-														style={style.iconButton}
+														style={style.button}
 														onClick={() =>
 															props.handleClickDelete(
 																el,
@@ -101,7 +97,7 @@ export default function RoomListTable(props) {
 															)
 														}
 													>
-														<Trash size={16} />
+														Delete
 													</button>
 												</div>
 											</div>

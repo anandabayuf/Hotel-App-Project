@@ -1,4 +1,3 @@
-import { Trash, Pencil } from "react-bootstrap-icons";
 import { Badge } from "react-bootstrap";
 import Loader from "../Loader";
 
@@ -6,9 +5,6 @@ export default function UserListTable(props) {
 	const style = {
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderRadius: "50px",
 		},
 	};
 
@@ -66,20 +62,20 @@ export default function UserListTable(props) {
 												<div className="col-auto">
 													<button
 														className="btn btn-warning"
-														style={style.iconButton}
+														style={style.button}
 														onClick={() =>
 															props.handleUpdateUser(
 																el._id
 															)
 														}
 													>
-														<Pencil size={16} />
+														Update
 													</button>
 												</div>
 												<div className="col-auto">
 													<button
 														className="btn btn-danger"
-														style={style.iconButton}
+														style={style.button}
 														onClick={() =>
 															props.handleClickDelete(
 																el,
@@ -87,7 +83,7 @@ export default function UserListTable(props) {
 															)
 														}
 													>
-														<Trash size={16} />
+														Delete
 													</button>
 												</div>
 											</div>

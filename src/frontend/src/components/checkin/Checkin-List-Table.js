@@ -1,5 +1,4 @@
 import { Badge } from "react-bootstrap";
-import { Eye } from "react-bootstrap-icons";
 import { idrFormat } from "../../utils/Formatter";
 import Loader from "../Loader";
 
@@ -7,9 +6,6 @@ export default function CheckinListTable(props) {
 	const style = {
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderRadius: "50px",
 		},
 	};
 
@@ -80,15 +76,15 @@ export default function CheckinListTable(props) {
 											<div className="row justify-content-center">
 												<div className="col-auto">
 													<button
-														className="btn btn-info"
-														style={style.iconButton}
+														className="btn btn-light"
+														style={style.button}
 														onClick={() =>
 															props.handleClickDetail(
 																el
 															)
 														}
 													>
-														<Eye size={16} />
+														View Data
 													</button>
 												</div>
 												<div className="col-auto">
