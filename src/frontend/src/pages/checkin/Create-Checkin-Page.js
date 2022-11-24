@@ -8,6 +8,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CreateCheckinPage() {
 	const dispatch = useDispatch();
@@ -45,15 +46,7 @@ export default function CreateCheckinPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: response.message,
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setRooms(response.data);
 		} else {
@@ -159,15 +152,7 @@ export default function CreateCheckinPage() {
 
 		setIsLoading(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			navigate("/transaction/checkin", {
 				state: {

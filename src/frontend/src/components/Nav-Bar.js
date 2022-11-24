@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { List } from "react-bootstrap-icons";
 import SideBar from "./Side-Bar";
 import { useEffect, useState } from "react";
@@ -8,24 +8,11 @@ export default function NavBar() {
 	const [show, setShow] = useState(false);
 	const [userLoggedIn, setUserLoggedIn] = useState({});
 
-	const navigate = useNavigate();
-
 	const auth = async () => {
 		const response = await checkToken();
 
 		if (response.status === 200) {
 			setUserLoggedIn(response.data);
-		} else {
-			localStorage.removeItem("TOKEN");
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: response.message,
-					},
-				},
-			});
 		}
 	};
 

@@ -17,6 +17,7 @@ import {
 } from "../../store/actions/Message-Toast-Action";
 import SearchBar from "../../components/Search-Bar";
 import DeleteModal from "../../components/Delete-Modal";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function UserListPage() {
 	const dispatch = useDispatch();
@@ -52,18 +53,9 @@ export default function UserListPage() {
 			paginationState.currentPage,
 			paginationState.numOfRows
 		);
-
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setUsers(response.data);
 			setPaginationState({
@@ -103,15 +95,7 @@ export default function UserListPage() {
 		setCurrentIndex(null);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			dispatch(
 				showMessageToast({
@@ -180,19 +164,10 @@ export default function UserListPage() {
 			paginationState.currentPage,
 			paginationState.numOfRows
 		);
-		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setUsers(response.data);
 			setPaginationState({
@@ -232,15 +207,7 @@ export default function UserListPage() {
 
 		setIsLoading(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 204) {
 			dispatch(
 				showMessageToast({

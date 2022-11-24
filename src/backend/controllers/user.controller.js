@@ -6,7 +6,7 @@ const userModel = require("../models/user.model");
 
 router.get("", async (req, res) => {
 	try {
-		const { data, ...rest } = await userModel.getAll(req.query);
+		const { data, ...rest } = await userModel.getAll(req.query, req.user);
 
 		let users = [];
 
@@ -92,11 +92,7 @@ router.put("/:id", async (req, res) => {
 	}
 
 	try {
-		const user = await userModel.edit(
-			req.params.id,
-			data,
-			req.user.username
-		);
+		const user = await userModel.edit(req.params.id, data);
 
 		const { password, salt, ...rest } = user;
 
@@ -116,10 +112,7 @@ router.put("/:id", async (req, res) => {
 
 router.put("/status/:id", async (req, res) => {
 	try {
-		const user = await userModel.editStatus(
-			req.params.id,
-			req.user.username
-		);
+		const user = await userModel.editStatus(req.params.id);
 
 		const { password, salt, ...rest } = user;
 
@@ -139,7 +132,7 @@ router.put("/status/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
 	try {
-		await userModel.delete(req.params.id, req.user.username);
+		await userModel.delete(req.params.id);
 		res.status(200).json({
 			status: 204,
 			message: "Successfully delete user data",

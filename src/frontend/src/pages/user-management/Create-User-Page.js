@@ -7,6 +7,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CreateUserPage() {
 	const dispatch = useDispatch();
@@ -40,15 +41,7 @@ export default function CreateUserPage() {
 		setIsLoading(false);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			navigate("/management/users", {
 				state: {

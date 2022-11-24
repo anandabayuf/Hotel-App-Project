@@ -33,7 +33,7 @@ export default function CheckoutListTable(props) {
 									<td className="text-center">
 										<button
 											className="btn btn-light"
-											style={style.iconButton}
+											style={style.button}
 											onClick={() =>
 												props.handleClickDetail(el)
 											}

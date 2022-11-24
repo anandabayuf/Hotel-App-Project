@@ -14,7 +14,7 @@ const getAllCheckout = async (page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -32,7 +32,7 @@ const searchCheckout = async (category, value, page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -50,7 +50,7 @@ const createCheckout = async (data) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 

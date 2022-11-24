@@ -17,6 +17,7 @@ import {
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
 import SearchBar from "../../components/Search-Bar";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CheckinListPage() {
 	const dispatch = useDispatch();
@@ -57,15 +58,7 @@ export default function CheckinListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setCheckins(data);
 			setPaginationState({
@@ -145,15 +138,7 @@ export default function CheckinListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setCheckins(response.data);
 			setPaginationState({
@@ -196,15 +181,7 @@ export default function CheckinListPage() {
 
 		setIsLoading(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			dispatch(
 				showMessageToast({

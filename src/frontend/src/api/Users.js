@@ -14,7 +14,7 @@ const getAllUser = async (page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -32,7 +32,7 @@ const searchUser = async (category, value, page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -47,7 +47,7 @@ const getUserById = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -65,7 +65,7 @@ const createUser = async (data) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -83,7 +83,7 @@ const updateUser = async (id, data) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -99,7 +99,7 @@ const updateUserStatus = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -115,7 +115,7 @@ const deleteUser = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 

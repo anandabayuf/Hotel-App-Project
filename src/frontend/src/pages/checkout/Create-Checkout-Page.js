@@ -9,6 +9,7 @@ import {
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
 import CreateCheckoutForm from "../../components/checkout/Create-Checkout-Form";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CreateCheckoutPage() {
 	const dispatch = useDispatch();
@@ -40,15 +41,7 @@ export default function CreateCheckoutPage() {
 		setIsFetching(false);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setCheckIn(response.data);
 			setCustomer(response.data.customer);
@@ -153,15 +146,7 @@ export default function CreateCheckoutPage() {
 
 		setIsLoading(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			navigate("/transaction/checkout", {
 				state: {

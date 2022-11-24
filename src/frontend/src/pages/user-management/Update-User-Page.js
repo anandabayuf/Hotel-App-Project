@@ -8,6 +8,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function UpdateUserPage() {
 	const dispatch = useDispatch();
@@ -32,15 +33,7 @@ export default function UpdateUserPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setUser({
 				...user,
@@ -97,15 +90,7 @@ export default function UpdateUserPage() {
 		setIsLoading(false);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			navigate("/management/users", {
 				state: {

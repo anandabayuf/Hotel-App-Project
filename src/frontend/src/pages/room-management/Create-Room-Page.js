@@ -7,6 +7,7 @@ import {
 	showMessageToast,
 	hideMessageToast,
 } from "../../store/actions/Message-Toast-Action";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CreateRoomPage() {
 	const dispatch = useDispatch();
@@ -58,19 +59,11 @@ export default function CreateRoomPage() {
 		e.preventDefault();
 
 		const response = await createRoom(room);
-		console.log(response);
+		
 		setIsLoading(false);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			navigate("/management/rooms", {
 				state: {

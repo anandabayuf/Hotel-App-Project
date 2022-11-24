@@ -21,47 +21,53 @@ export default function CreateRoomForm(props) {
 
 	return (
 		<form onSubmit={props.handleSubmit}>
-			<div className="mb-3">
-				<label
-					className="form-label"
-					style={style.label}
-					htmlFor="roomNo"
-				>
-					Room No
-				</label>
-				<input
-					type="text"
-					className="form-control"
-					id="roomNo"
-					name="roomNo"
-					value={props.room.roomNo}
-					onChange={props.handleChange}
-					style={style.input}
-				/>
-			</div>
-			<div className="mb-3">
-				<label
-					className="form-label"
-					style={style.label}
-					htmlFor="type"
-				>
-					Type
-				</label>
-				<select
-					className="form-select"
-					style={style.input}
-					id="type"
-					name="type"
-					value={props.room.type}
-					onChange={props.handleChange}
-				>
-					<option value="Standard">Standard</option>
-					<option value="Superior">Superior</option>
-					<option value="Deluxe">Deluxe</option>
-					<option value="Presidential Suite">
-						Presidential Suite
-					</option>
-				</select>
+			<div className="row mb-3">
+				<div className="col">
+					<>
+						<label
+							className="form-label"
+							style={style.label}
+							htmlFor="roomNo"
+						>
+							Room No
+						</label>
+						<input
+							type="text"
+							className="form-control"
+							id="roomNo"
+							name="roomNo"
+							value={props.room.roomNo}
+							onChange={props.handleChange}
+							style={style.input}
+						/>
+					</>
+				</div>
+				<div className="col">
+					<>
+						<label
+							className="form-label"
+							style={style.label}
+							htmlFor="type"
+						>
+							Type
+						</label>
+						<select
+							className="form-select"
+							style={style.input}
+							id="type"
+							name="type"
+							value={props.room.type}
+							onChange={props.handleChange}
+						>
+							<option value="Standard">Standard</option>
+							<option value="Superior">Superior</option>
+							<option value="Deluxe">Deluxe</option>
+							<option value="Presidential Suite">
+								Presidential Suite
+							</option>
+						</select>
+					</>
+				</div>
 			</div>
 			<div className="mb-3">
 				<label

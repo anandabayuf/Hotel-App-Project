@@ -11,12 +11,30 @@ export default function MessageToast(props) {
 				show={props.toastState.show}
 				onClose={() => props.handleClose()}
 			>
-				<Toast.Header>
+				<Toast.Header
+					className={
+						props.toastState.title === "Failed"
+							? "bg-danger text-light"
+							: props.toastState.title === "Success"
+							? "bg-success text-light"
+							: "bg-secondary text-light"
+					}
+				>
 					<strong className="me-auto">
 						{props.toastState.title}
 					</strong>
 				</Toast.Header>
-				<Toast.Body>Message: {props.toastState.message}</Toast.Body>
+				<Toast.Body
+					className={
+						props.toastState.title === "Failed"
+							? "bg-danger text-light"
+							: props.toastState.title === "Success"
+							? "bg-success text-light"
+							: "bg-secondary text-light"
+					}
+				>
+					{props.toastState.message}
+				</Toast.Body>
 			</Toast>
 		</ToastContainer>
 	);

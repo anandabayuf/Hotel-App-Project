@@ -33,6 +33,16 @@ export default function LoginPage() {
 		});
 	};
 
+	const hideMessageToast = () => {
+		setTimeout(() => {
+			setToastState({
+				show: false,
+				title: "",
+				message: "",
+			});
+		}, 5000);
+	};
+
 	const handleLogIn = async (e) => {
 		setIsLoading(true);
 		e.preventDefault();
@@ -43,21 +53,21 @@ export default function LoginPage() {
 		if (response.token) {
 			localStorage.setItem("TOKEN", `JWT ${response.token}`);
 			navigate("/transaction/checkin");
+		} else if (response.error) {
+			setToastState({
+				show: true,
+				title: "Failed",
+				message: response.message,
+			});
+			hideMessageToast();
 		} else {
 			setToastState({
 				...toastState,
 				show: true,
-				title: response.message,
+				title: "Failed",
 				message: response.detail,
 			});
-			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
-			}, 5000);
+			hideMessageToast();
 		}
 	};
 
@@ -65,14 +75,7 @@ export default function LoginPage() {
 		if (location.state) {
 			setToastState(location.state.toastState);
 			window.history.replaceState({}, document.title);
-			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
-			}, 5000);
+			hideMessageToast();
 		}
 	};
 

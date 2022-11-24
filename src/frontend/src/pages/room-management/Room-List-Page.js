@@ -18,6 +18,7 @@ import {
 import SearchBar from "../../components/Search-Bar";
 import DeleteModal from "../../components/Delete-Modal";
 import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function RoomListPage() {
 	const dispatch = useDispatch();
@@ -56,15 +57,7 @@ export default function RoomListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setRooms(response.data);
 			setPaginationState({
@@ -101,15 +94,7 @@ export default function RoomListPage() {
 		setCurrentIndex(null);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			dispatch(
 				showMessageToast({
@@ -164,15 +149,7 @@ export default function RoomListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setRooms(response.data);
 			setPaginationState({
@@ -212,15 +189,7 @@ export default function RoomListPage() {
 		setIsLoading(false);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 204) {
 			dispatch(
 				showMessageToast({

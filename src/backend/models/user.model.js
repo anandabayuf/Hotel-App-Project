@@ -12,9 +12,8 @@ exports.create = (data) => {
 	});
 };
 
-exports.getAll = (query) => {
+exports.getAll = (query, userLoggedIn) => {
 	let { limit = 5, page = 1, ...search } = query;
-
 	const key = Object.keys(search);
 	const value = search[key];
 
@@ -25,6 +24,11 @@ exports.getAll = (query) => {
 				if (err) {
 					reject(err);
 				} else {
+					const newRes = result.filter((user) => {
+						return user.username !== userLoggedIn.username;
+					});
+					console.log(newRes);
+
 					const count = await schema.UserSchema.find({
 						[key]: { $regex: `^${value}`, $options: "i" },
 					})
@@ -32,7 +36,7 @@ exports.getAll = (query) => {
 						.count();
 
 					resolve({
-						data: result,
+						data: newRes,
 						totalPages: Math.ceil(count / limit),
 						currentPage: page,
 						totalData: count,
@@ -58,79 +62,51 @@ exports.getById = (id) => {
 	});
 };
 
-exports.edit = (id, data, usernameLoggedIn) => {
+exports.edit = (id, data) => {
 	return new Promise((resolve, reject) => {
-		this.getById(id)
-			.then((findByIdRes) => {
-				if (findByIdRes.username === usernameLoggedIn) {
-					reject("Cannot update signed in user");
-				} else {
-					schema.UserSchema.findByIdAndUpdate(
-						id,
-						data,
-						(err, result) => {
-							if (err) {
-								reject(err);
-							} else {
-								this.getById(id)
-									.then((res) => resolve(res))
-									.catch((e) => reject(e));
-							}
-						}
-					).lean();
-				}
-			})
-			.catch((err) => reject(err));
-	});
-};
-
-exports.editStatus = (id, usernameLoggedIn) => {
-	return new Promise((resolve, reject) => {
-		this.getById(id)
-			.then((findByIdRes) => {
-				if (findByIdRes.username === usernameLoggedIn) {
-					reject("Cannot update signed in user");
-				} else {
-					const data = {
-						status:
-							findByIdRes.status === "Active"
-								? "Inactive"
-								: "Active",
-					};
-
-					schema.UserSchema.findByIdAndUpdate(
-						id,
-						data,
-						(err, result) => {
-							if (err) {
-								reject(err);
-							} else {
-								this.getById(id)
-									.then((res) => resolve(res))
-									.catch((e) => reject(e));
-							}
-						}
-					).lean();
-				}
-			})
-			.catch((err) => reject(err));
-	});
-};
-
-exports.delete = (id, usernameLoggedIn) => {
-	return new Promise((resolve, reject) => {
-		this.getById(id).then((findByIdRes) => {
-			if (findByIdRes.username === usernameLoggedIn) {
-				reject("Cannot delete signed in user");
+		schema.UserSchema.findByIdAndUpdate(id, data, (err, result) => {
+			if (err) {
+				reject(err);
 			} else {
-				schema.UserSchema.findByIdAndDelete(id, (err, result) => {
+				this.getById(id)
+					.then((res) => resolve(res))
+					.catch((e) => reject(e));
+			}
+		}).lean();
+	});
+};
+
+exports.editStatus = (id) => {
+	return new Promise((resolve, reject) => {
+		this.getById(id)
+			.then((findByIdRes) => {
+				const data = {
+					status:
+						findByIdRes.status === "Active" ? "Inactive" : "Active",
+				};
+
+				schema.UserSchema.findByIdAndUpdate(id, data, (err, result) => {
 					if (err) {
 						reject(err);
 					} else {
-						resolve(result);
+						this.getById(id)
+							.then((res) => resolve(res))
+							.catch((e) => reject(e));
 					}
 				}).lean();
+			})
+			.catch((err) => reject(err));
+	});
+};
+
+exports.delete = (id) => {
+	return new Promise((resolve, reject) => {
+		schema.UserSchema.findByIdAndDelete(id, (err, result) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(result);
 			}
-		});
+		}).lean();
 	});
 };
