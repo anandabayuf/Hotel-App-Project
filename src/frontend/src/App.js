@@ -21,6 +21,7 @@ import CreateCheckinPage from "./pages/checkin/Create-Checkin-Page";
 import MessageToast from "./components/Message-Toast";
 import { useSelector, useDispatch } from "react-redux";
 import { hideMessageToast } from "./store/actions/Message-Toast-Action";
+import AboutUs from "./pages/Settings/About-Us";
 
 const Protected = () => {
 	// eslint-disable-next-line
@@ -96,6 +97,19 @@ function App() {
 								path="update/:id"
 								element={<UpdateUserPage />}
 							/>
+						</Route>
+					</Route>
+					<Route path="settings">
+						{/* <Route path="rooms">
+							<Route index element={<RoomListPage />} />
+							<Route path="create" element={<CreateRoomPage />} />
+							<Route
+								path="update/:id"
+								element={<UpdateRoomPage />}
+							/>
+						</Route> */}
+						<Route path="about-us">
+							<Route index element={<AboutUs />} />
 						</Route>
 					</Route>
 				</Route>

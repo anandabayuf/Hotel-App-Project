@@ -100,7 +100,7 @@ export default function SideBar(props) {
 								<li className="nav-item">
 									<Link
 										className="nav-link"
-										to="transaction/checkin"
+										to="settings/about-us"
 										onClick={props.handleClose}
 									>
 										About Us
