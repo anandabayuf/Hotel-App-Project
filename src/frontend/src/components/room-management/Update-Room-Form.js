@@ -2,23 +2,12 @@ import Loader from "../../components/Loader";
 
 export default function UpdateRoomForm(props) {
 	const style = {
-		page: {
-			padding: "30px",
-			paddingTop: "70px",
-			backgroundColor: "#F9F7F7",
-		},
-		title: {
-			color: "#112D4E",
-		},
 		label: {
 			color: "#3F72AF",
 		},
 		input: {
 			borderRadius: "10px",
 			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
 			color: "#3F72AF",
 		},
 		card: {
@@ -181,7 +170,7 @@ export default function UpdateRoomForm(props) {
 				</div>
 			</div>
 			{props.isLoading ? (
-				<Loader style={style} />
+				<Loader />
 			) : (
 				<div className="row">
 					<div className="col">

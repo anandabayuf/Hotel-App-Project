@@ -2,14 +2,6 @@ import Loader from "../../components/Loader";
 
 export default function CreateUserForm(props) {
 	const style = {
-		page: {
-			padding: "30px",
-			paddingTop: "70px",
-			backgroundColor: "#F9F7F7",
-		},
-		title: {
-			color: "#112D4E",
-		},
 		label: {
 			color: "#3F72AF",
 		},
@@ -17,13 +9,6 @@ export default function CreateUserForm(props) {
 			borderRadius: "10px",
 			borderColor: "#DBE2EF",
 			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
 		},
 		button: {
 			borderRadius: "15px",
@@ -108,7 +93,7 @@ export default function CreateUserForm(props) {
 				/>
 			</div>
 			{props.isLoading ? (
-				<Loader style={style} />
+				<Loader />
 			) : (
 				<div className="row">
 					<div className="col">

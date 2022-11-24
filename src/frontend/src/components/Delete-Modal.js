@@ -1,23 +1,29 @@
 import { Modal } from "react-bootstrap";
 
-export default function DeleteUserModal(props) {
+export default function DeleteModal(props) {
+	const style = {
+		button: {
+			borderRadius: "15px",
+		},
+	};
+
 	return (
 		<Modal
-			show={props.deleteUserModalState}
-			onHide={() => props.setDeleteUserModalState(false)}
+			show={props.deleteModalState}
+			onHide={() => props.handleClose()}
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
 		>
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-vcenter">
-					Delete User
+					Delete {props.for}
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<p className="text-center">
-					Are you sure you want to delete the user data with
+					Are you sure you want to delete the {props.for} data with
 					<br />
-					username: <strong>{props.user.username}</strong>?
+					{props.identifier}: {props.children}?
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
@@ -25,8 +31,8 @@ export default function DeleteUserModal(props) {
 					<div className="col-auto">
 						<button
 							className="btn btn-outline-dark"
-							onClick={() => props.setDeleteUserModalState(false)}
-							style={props.style.button}
+							onClick={() => props.handleClose()}
+							style={style.button}
 						>
 							Cancel
 						</button>
@@ -34,11 +40,8 @@ export default function DeleteUserModal(props) {
 					<div className="col-auto">
 						<button
 							className="btn btn-danger"
-							onClick={() => {
-								props.setDeleteUserModalState(false);
-								props.handleDeleteUser(props.user._id);
-							}}
-							style={props.style.button}
+							onClick={() => props.handleDelete()}
+							style={style.button}
 						>
 							Delete
 						</button>

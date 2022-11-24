@@ -14,7 +14,7 @@ const logIn = async (credential) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -30,7 +30,7 @@ const checkToken = async () => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 

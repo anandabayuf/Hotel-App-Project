@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { List } from "react-bootstrap-icons";
 import SideBar from "./Side-Bar";
 import { useEffect, useState } from "react";
@@ -8,24 +8,11 @@ export default function NavBar() {
 	const [show, setShow] = useState(false);
 	const [userLoggedIn, setUserLoggedIn] = useState({});
 
-	const navigate = useNavigate();
-
 	const auth = async () => {
 		const response = await checkToken();
 
 		if (response.status === 200) {
 			setUserLoggedIn(response.data);
-		} else {
-			localStorage.removeItem("TOKEN");
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: response.message,
-					},
-				},
-			});
 		}
 	};
 
@@ -46,6 +33,10 @@ export default function NavBar() {
 		title: {
 			color: "#112D4E",
 		},
+		iconList: {
+			display: "flex",
+			justifyContent: "center",
+		},
 		menuButton: {
 			border: "none",
 		},
@@ -63,7 +54,7 @@ export default function NavBar() {
 					style={style.menuButton}
 					onClick={handleShow}
 				>
-					<div style={{ display: "flex", justifyContent: "center" }}>
+					<div style={style.iconList}>
 						<List alignmentBaseline="middle" size={24} />
 					</div>
 				</button>
@@ -73,8 +64,9 @@ export default function NavBar() {
 						to="/transaction/checkin"
 						style={style.title}
 					>
-						Hotel App
+						Hotel Information System
 					</Link>
+					<div style={style.title}>Hello, {userLoggedIn.name}!</div>
 				</div>
 			</nav>
 
@@ -82,7 +74,6 @@ export default function NavBar() {
 				show={show}
 				handleClose={handleClose}
 				role={userLoggedIn.role}
-				style={style}
 			/>
 		</>
 	);

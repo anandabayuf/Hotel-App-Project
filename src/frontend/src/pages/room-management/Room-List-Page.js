@@ -5,17 +5,23 @@ import {
 	searchRoom,
 	updateRoomStatus,
 } from "../../api/Room";
-import SearchBarRoom from "../../components/room-management/Search-Bar-Room";
 import RoomListTable from "../../components/room-management/Room-List-Table";
 import NoData from "../../components/No-Data";
 import Loader from "../../components/Loader";
-import DeleteRoomModal from "../../components/room-management/Delete-Room-Modal";
-import MessageToast from "../../components/Message-Toast";
 import { useNavigate, useLocation } from "react-router-dom";
-import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
+import DeleteModal from "../../components/Delete-Modal";
+import DetailRoomModal from "../../components/room-management/Detail-Room-Modal";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function RoomListPage() {
+	const dispatch = useDispatch();
 	const [rooms, setRooms] = useState([]);
 
 	const [currentIndex, setCurrentIndex] = useState(null);
@@ -24,19 +30,13 @@ export default function RoomListPage() {
 
 	const [isFetching, setIsFetching] = useState(false);
 
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
-
 	const [search, setSearch] = useState({
 		query: "",
 		category: "roomNo",
 	});
 
-	const [deleteRoomModalState, setDeleteRoomModalState] = useState(false);
-	const [detailRoomModalState, setDetailRoomModalState] = useState(false);
+	const [deleteModalState, setDeleteModalState] = useState(false);
+	const [detailModalState, setDetailModalState] = useState(false);
 
 	const [paginationState, setPaginationState] = useState({
 		numOfRows: 5,
@@ -54,19 +54,10 @@ export default function RoomListPage() {
 			paginationState.currentPage,
 			paginationState.numOfRows
 		);
-		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setRooms(response.data);
 			setPaginationState({
@@ -75,18 +66,16 @@ export default function RoomListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 
 			setTimeout(() => {
-				setToastState({
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -105,36 +94,28 @@ export default function RoomListPage() {
 		setCurrentIndex(null);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
-			setToastState({
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getRooms();
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -165,19 +146,10 @@ export default function RoomListPage() {
 			paginationState.currentPage,
 			paginationState.numOfRows
 		);
-		console.log(response);
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setRooms(response.data);
 			setPaginationState({
@@ -186,66 +158,59 @@ export default function RoomListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
 
 	const handleClickDelete = (room, index) => {
 		setRoom(room);
-		setDeleteRoomModalState(true);
+		setDeleteModalState(true);
 		setCurrentIndex(index);
 	};
 
-	const handleDeleteRoom = async (id) => {
+	const handleCloseDeleteModal = () => {
+		setDeleteModalState(false);
+	};
+
+	const handleDelete = async () => {
+		handleCloseDeleteModal();
 		setIsLoading(true);
-		const response = await deleteRoom(id);
+		const response = await deleteRoom(room._id);
 
 		setIsLoading(false);
 
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 204) {
-			setToastState({
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getRooms();
 		} else {
-			setToastState({
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -255,15 +220,10 @@ export default function RoomListPage() {
 
 	const handleAfterCreateRoom = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -274,7 +234,11 @@ export default function RoomListPage() {
 
 	const handleClickDetail = (room) => {
 		setRoom(room);
-		setDetailRoomModalState(true);
+		setDetailModalState(true);
+	};
+
+	const handleCloseDetailModal = () => {
+		setDetailModalState(false);
 	};
 
 	const handleClickUpdate = (id) => {
@@ -323,27 +287,8 @@ export default function RoomListPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
 		button: {
 			borderRadius: "15px",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		iconButton: {
-			borderColor: "#3F72AF",
-			borderRadius: "50px",
 		},
 	};
 
@@ -365,15 +310,18 @@ export default function RoomListPage() {
 					</div>
 				</div>
 				<div className="mb-3">
-					<SearchBarRoom
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-						style={style}
-					/>
+						for="rooms"
+					>
+						<option value="roomNo">Room Number</option>
+						<option value="status">Status</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : rooms.length > 0 ? (
 					<>
 						<RoomListTable
@@ -386,7 +334,6 @@ export default function RoomListPage() {
 							handleClickUpdate={handleClickUpdate}
 						/>
 						<Pagination
-							style={style}
 							paginationState={paginationState}
 							handleChangePaginationState={
 								handleChangePaginationState
@@ -403,23 +350,22 @@ export default function RoomListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
-			{deleteRoomModalState && (
-				<DeleteRoomModal
-					deleteRoomModalState={deleteRoomModalState}
-					setDeleteRoomModalState={setDeleteRoomModalState}
-					room={room}
-					handleDeleteRoom={handleDeleteRoom}
-					style={style}
-				/>
+			{deleteModalState && (
+				<DeleteModal
+					deleteModalState={deleteModalState}
+					setDeleteModalState={setDeleteModalState}
+					handleClose={handleCloseDeleteModal}
+					handleDelete={handleDelete}
+					for="Room"
+					identifier="room no"
+				>
+					<strong>{room.roomNo}</strong>
+				</DeleteModal>
 			)}
-			{detailRoomModalState && (
+			{detailModalState && (
 				<DetailRoomModal
-					detailRoomModalState={detailRoomModalState}
-					setDetailRoomModalState={setDetailRoomModalState}
+					detailModalState={detailModalState}
+					handleCloseDetailModal={handleCloseDetailModal}
 					room={room}
 				/>
 			)}

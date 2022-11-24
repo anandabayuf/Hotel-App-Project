@@ -6,6 +6,21 @@ import {
 } from "react-bootstrap-icons";
 
 export default function Pagination(props) {
+	const style = {
+		label: {
+			color: "#3F72AF",
+		},
+		input: {
+			borderRadius: "10px",
+			borderColor: "#DBE2EF",
+			color: "#3F72AF",
+		},
+		iconButton: {
+			borderColor: "#3F72AF",
+			borderRadius: "50px",
+		},
+	};
+
 	return (
 		<div className="row justify-content-end align-items-center">
 			<div className="row justify-content-end align-items-center">
@@ -15,7 +30,7 @@ export default function Pagination(props) {
 				<div className="col-auto">
 					<select
 						className="form-select"
-						style={props.style.input}
+						style={style.input}
 						name="numOfRows"
 						value={props.paginationState.numOfRows.toString()}
 						onChange={props.handleChangePaginationState}
@@ -45,24 +60,21 @@ export default function Pagination(props) {
 				<div className="col-auto">
 					<button
 						className="btn"
-						style={props.style.iconButton}
+						style={style.iconButton}
 						disabled={props.paginationState.currentPage === 1}
 						onClick={() => props.handleClickLeftPagination()}
 					>
 						{props.paginationState.currentPage === 1 ? (
-							<CaretLeft size={16} style={props.style.label} />
+							<CaretLeft size={16} style={style.label} />
 						) : (
-							<CaretLeftFill
-								size={16}
-								style={props.style.label}
-							/>
+							<CaretLeftFill size={16} style={style.label} />
 						)}
 					</button>
 				</div>
 				<div className="col-auto">
 					<button
 						className="btn"
-						style={props.style.iconButton}
+						style={style.iconButton}
 						disabled={
 							props.paginationState.currentPage ===
 							props.paginationState.totalPages
@@ -71,12 +83,9 @@ export default function Pagination(props) {
 					>
 						{props.paginationState.currentPage ===
 						props.paginationState.totalPages ? (
-							<CaretRight size={16} style={props.style.label} />
+							<CaretRight size={16} style={style.label} />
 						) : (
-							<CaretRightFill
-								size={16}
-								style={props.style.label}
-							/>
+							<CaretRightFill size={16} style={style.label} />
 						)}
 					</button>
 				</div>

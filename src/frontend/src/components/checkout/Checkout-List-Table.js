@@ -1,15 +1,7 @@
-import { Eye } from "react-bootstrap-icons";
-
 export default function CheckoutListTable(props) {
 	const style = {
-		loader: {
-			color: "#3F72AF",
-		},
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderRadius: "50px",
 		},
 	};
 
@@ -36,17 +28,17 @@ export default function CheckoutListTable(props) {
 											el.checkOutDate
 										).toLocaleString()}
 									</td>
-									<td>{el.checkIn.room.roomNo}</td>
+									<td>{el.checkIn.roomNo}</td>
 									<td>{el.checkIn.customer.name}</td>
 									<td className="text-center">
 										<button
-											className="btn btn-info"
-											style={style.iconButton}
+											className="btn btn-light"
+											style={style.button}
 											onClick={() =>
 												props.handleClickDetail(el)
 											}
 										>
-											<Eye size={16} />
+											View Data
 										</button>
 									</td>
 								</tr>

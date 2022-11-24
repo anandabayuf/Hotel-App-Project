@@ -2,8 +2,9 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import Accordion from "react-bootstrap/Accordion";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
-import { CCircleFill, HeartFill, BoxArrowRight } from "react-bootstrap-icons";
+import { BoxArrowRight } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import CopyRight from "./Copyright";
 
 export default function SideBar(props) {
 	const navigate = useNavigate();
@@ -17,12 +18,16 @@ export default function SideBar(props) {
 		signOutButton: {
 			borderRadius: "15px",
 		},
+		title: {
+			color: "#112D4E",
+		},
 	};
+
 	return (
 		<Offcanvas show={props.show} onHide={props.handleClose}>
 			<Offcanvas.Header>
-				<Offcanvas.Title style={props.style.title}>
-					Hotel App
+				<Offcanvas.Title style={style.title}>
+					Hotel Information System
 				</Offcanvas.Title>
 			</Offcanvas.Header>
 			<Offcanvas.Body>
@@ -79,31 +84,31 @@ export default function SideBar(props) {
 							</Nav>
 						</Accordion.Body>
 					</Accordion.Item>
-					{/* <Accordion.Item eventKey="2">
-						<Accordion.Header>Report</Accordion.Header>
+					<Accordion.Item eventKey="2">
+						<Accordion.Header>Settings</Accordion.Header>
 						<Accordion.Body>
 							<Nav className="flex-column">
 								<li className="nav-item">
 									<Link
 										className="nav-link"
-										to="/"
+										to="transaction/checkin"
 										onClick={props.handleClose}
 									>
-										Transaction Report
+										My Profile
 									</Link>
 								</li>
 								<li className="nav-item">
 									<Link
 										className="nav-link"
-										to="/"
+										to="settings/about-us"
 										onClick={props.handleClose}
 									>
-										Customer Report
+										About Us
 									</Link>
 								</li>
 							</Nav>
 						</Accordion.Body>
-					</Accordion.Item> */}
+					</Accordion.Item>
 				</Accordion>
 			</Offcanvas.Body>
 			<div className="d-grid gap-2" style={{ padding: "10px" }}>
@@ -115,15 +120,7 @@ export default function SideBar(props) {
 					<BoxArrowRight size={16} /> Sign Out
 				</button>
 			</div>
-			<div
-				className="text-center"
-				style={{ padding: "10px", color: "#3F72AF" }}
-			>
-				<span>
-					Made with <HeartFill /> by Team 1 Juara Coding{" "}
-					<CCircleFill /> 2022
-				</span>
-			</div>
+			<CopyRight />
 		</Offcanvas>
 	);
 }

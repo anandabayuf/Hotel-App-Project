@@ -14,7 +14,7 @@ const getAllCheckins = async (page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -32,7 +32,7 @@ const searchCheckin = async (category, value, page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -47,7 +47,7 @@ const getCheckinById = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -65,7 +65,7 @@ const createCheckin = async (data) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -81,7 +81,7 @@ const updateCheckinStatus = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 

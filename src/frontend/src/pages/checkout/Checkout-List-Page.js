@@ -2,32 +2,31 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAllCheckout } from "../../api/Checkout";
 import Loader from "../../components/Loader";
-import MessageToast from "../../components/Message-Toast";
 import CheckoutListTable from "../../components/checkout/Checkout-List-Table";
 import NoData from "../../components/No-Data";
-import SearchBarCheckout from "../../components/checkout/Search-Bar-Checkout";
 import DetailCheckoutModal from "../../components/checkout/Detail-Checkout-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CheckoutListPage() {
+	const dispatch = useDispatch();
 	const [checkouts, setCheckouts] = useState([]);
 	const [checkoutsList, setCheckoutsList] = useState([]);
 
 	const [isFetching, setIsFetching] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const [search, setSearch] = useState({
 		query: "",
 		category: "roomNo",
 	});
 
-	const [openDetailCheckoutModal, setOpenDetailCheckoutModal] =
-		useState(false);
+	const [detailModalState, setDetailModalState] = useState(false);
 
 	const [checkOut, setCheckOut] = useState({});
 
@@ -51,15 +50,7 @@ export default function CheckoutListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setCheckouts(data);
 			setCheckoutsList(data);
@@ -69,19 +60,15 @@ export default function CheckoutListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -93,20 +80,19 @@ export default function CheckoutListPage() {
 
 	const handleClickDetail = (data) => {
 		setCheckOut(data);
-		setOpenDetailCheckoutModal(true);
+		setDetailModalState(true);
+	};
+
+	const handleCloseDetailModal = () => {
+		setDetailModalState(false);
 	};
 
 	const handleAfterCheckout = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -137,7 +123,7 @@ export default function CheckoutListPage() {
 			switch (search.category) {
 				case "roomNo":
 					result =
-						el.checkIn.room.roomNo
+						el.checkIn.roomNo
 							.toLowerCase()
 							.indexOf(search.query.toLocaleLowerCase()) > -1;
 					break;
@@ -208,28 +194,6 @@ export default function CheckoutListPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
-		button: {
-			borderRadius: "15px",
-		},
-		iconButton: {
-			borderColor: "#3F72AF",
-			borderRadius: "50px",
-		},
 	};
 
 	return (
@@ -237,15 +201,19 @@ export default function CheckoutListPage() {
 			<div className="container">
 				<h3 style={style.title}>Check Out List</h3>
 				<div className="mb-3">
-					<SearchBarCheckout
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-						style={style}
-					/>
+						for="check out"
+					>
+						<option value="roomNo">Room No</option>
+						<option value="customerName">Customer Name</option>
+						<option value="customerId">Customer ID</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : checkoutsList.length > 0 ? (
 					<>
 						<CheckoutListTable
@@ -253,7 +221,6 @@ export default function CheckoutListPage() {
 							handleClickDetail={handleClickDetail}
 						/>
 						<Pagination
-							style={style}
 							paginationState={paginationState}
 							handleChangePaginationState={
 								handleChangePaginationState
@@ -270,17 +237,12 @@ export default function CheckoutListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
-			{openDetailCheckoutModal && (
+			{detailModalState && (
 				<DetailCheckoutModal
-					openDetailCheckoutModal={openDetailCheckoutModal}
-					setOpenDetailCheckoutModal={setOpenDetailCheckoutModal}
+					detailModalState={detailModalState}
+					handleCloseDetailModal={handleCloseDetailModal}
 					checkOut={checkOut}
 					checkIn={checkOut.checkIn}
-					room={checkOut.checkIn.room}
 				/>
 			)}
 		</div>

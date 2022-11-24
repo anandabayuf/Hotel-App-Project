@@ -1,18 +1,11 @@
 import { Badge } from "react-bootstrap";
-import { Eye } from "react-bootstrap-icons";
 import { idrFormat } from "../../utils/Formatter";
 import Loader from "../Loader";
 
 export default function CheckinListTable(props) {
 	const style = {
-		loader: {
-			color: "#3F72AF",
-		},
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderRadius: "50px",
 		},
 	};
 
@@ -46,7 +39,7 @@ export default function CheckinListTable(props) {
 									<td>
 										{new Date(el.dueDate).toLocaleString()}
 									</td>
-									<td>{el.room.roomNo}</td>
+									<td>{el.roomNo}</td>
 									<td>{el.customer.name}</td>
 									<td>{idrFormat(el.totalCost)}</td>
 									<td className="text-center">
@@ -78,20 +71,20 @@ export default function CheckinListTable(props) {
 									<td>
 										{props.isLoading &&
 										props.currentIndex === index ? (
-											<Loader style={style} />
+											<Loader />
 										) : (
 											<div className="row justify-content-center">
 												<div className="col-auto">
 													<button
-														className="btn btn-info"
-														style={style.iconButton}
+														className="btn btn-light"
+														style={style.button}
 														onClick={() =>
 															props.handleClickDetail(
 																el
 															)
 														}
 													>
-														<Eye size={16} />
+														View Data
 													</button>
 												</div>
 												<div className="col-auto">

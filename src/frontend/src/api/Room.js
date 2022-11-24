@@ -14,7 +14,7 @@ const getAllRooms = async (page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -29,7 +29,7 @@ const getAvailableRooms = async () => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -47,7 +47,7 @@ const searchRoom = async (category, value, page, limit) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -62,7 +62,7 @@ const getRoomById = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -86,7 +86,7 @@ const createRoom = async (data) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -113,7 +113,7 @@ const updateRoom = async (id, data) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -129,7 +129,7 @@ const updateRoomStatus = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 
@@ -145,7 +145,7 @@ const deleteRoom = async (id) => {
 
 		return responseJson;
 	} catch (err) {
-		alert(err);
+		return { error: true, message: "Network Error" };
 	}
 };
 

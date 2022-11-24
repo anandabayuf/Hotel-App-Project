@@ -1,37 +1,37 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../../components/Loader";
-import MessageToast from "../../components/Message-Toast";
 import NoData from "../../components/No-Data";
 import {
 	getAllCheckins,
 	searchCheckin,
 	updateCheckinStatus,
 } from "../../api/Checkin";
-import SearchBarCheckin from "../../components/checkin/Search-Bar-Checkin";
 import CheckinListTable from "../../components/checkin/Checkin-List-Table";
 import DetailCheckinModal from "../../components/checkin/Detail-Checkin-Modal";
 import UpdateCheckinStatusModal from "../../components/checkin/Update-Checkin-Status-Modal";
 import Pagination from "../../components/Pagination";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
+import SearchBar from "../../components/Search-Bar";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CheckinListPage() {
+	const dispatch = useDispatch();
 	const [checkins, setCheckins] = useState([]);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [isFetching, setIsFetching] = useState(false);
-
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
 
 	const [search, setSearch] = useState({
 		query: "",
 		category: "roomNo",
 	});
 
-	const [openDetailCheckinModal, setOpenDetailCheckinModal] = useState(false);
+	const [detailModalState, setDetailModalState] = useState(false);
 	const [updateCheckinStatusModalState, setUpdateCheckinStatusModalState] =
 		useState(false);
 
@@ -58,15 +58,7 @@ export default function CheckinListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setCheckins(data);
 			setPaginationState({
@@ -75,19 +67,15 @@ export default function CheckinListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -99,20 +87,19 @@ export default function CheckinListPage() {
 
 	const handleClickDetail = (data) => {
 		setCheckin(data);
-		setOpenDetailCheckinModal(true);
+		setDetailModalState(true);
+	};
+
+	const handleCloseDetailModal = () => {
+		setDetailModalState(false);
 	};
 
 	const handleAfterCheckIn = () => {
 		if (location.state) {
-			setToastState(location.state.toastState);
+			dispatch(showMessageToast(location.state.toastState));
 			window.history.replaceState({}, document.title);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -151,15 +138,7 @@ export default function CheckinListPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setCheckins(response.data);
 			setPaginationState({
@@ -168,19 +147,15 @@ export default function CheckinListPage() {
 				totalData: response.totalData,
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -206,39 +181,28 @@ export default function CheckinListPage() {
 
 		setIsLoading(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Success",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Success",
+					message: response.message,
+				})
+			);
 			getCheckins();
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 		}
 
 		setTimeout(() => {
-			setToastState({
-				...toastState,
-				show: false,
-				title: "",
-				message: "",
-			});
+			dispatch(hideMessageToast());
 		}, 5000);
 	};
 
@@ -284,27 +248,8 @@ export default function CheckinListPage() {
 		title: {
 			color: "#112D4E",
 		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-		},
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderColor: "#3F72AF",
-			borderRadius: "50px",
 		},
 	};
 
@@ -326,15 +271,21 @@ export default function CheckinListPage() {
 					</div>
 				</div>
 				<div className="mb-3">
-					<SearchBarCheckin
+					<SearchBar
 						search={search}
 						handleChangeSearch={handleChangeSearch}
 						handleSubmitSearch={handleSubmitSearch}
-						style={style}
-					/>
+						for="check in"
+					>
+						<option value="roomNo">Room No</option>
+						<option value="customer.name">Customer Name</option>
+						<option value="customer.ID">Customer ID</option>
+						<option value="status">Status</option>
+						<option value="paymentStatus">Payment Status</option>
+					</SearchBar>
 				</div>
 				{isFetching ? (
-					<Loader style={style} />
+					<Loader />
 				) : checkins.length > 0 ? (
 					<>
 						<CheckinListTable
@@ -345,7 +296,6 @@ export default function CheckinListPage() {
 							isLoading={isLoading}
 						/>
 						<Pagination
-							style={style}
 							paginationState={paginationState}
 							handleChangePaginationState={
 								handleChangePaginationState
@@ -362,16 +312,11 @@ export default function CheckinListPage() {
 					<NoData />
 				)}
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
-			{openDetailCheckinModal && (
+			{detailModalState && (
 				<DetailCheckinModal
-					openDetailCheckinModal={openDetailCheckinModal}
-					setOpenDetailCheckinModal={setOpenDetailCheckinModal}
+					detailModalState={detailModalState}
+					handleCloseDetailModal={handleCloseDetailModal}
 					checkIn={checkin}
-					room={checkin.room}
 				/>
 			)}
 			{updateCheckinStatusModalState && (

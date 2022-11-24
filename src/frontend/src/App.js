@@ -18,6 +18,10 @@ import CreateRoomPage from "./pages/room-management/Create-Room-Page";
 import UpdateRoomPage from "./pages/room-management/Update-Room-Page";
 import CheckinListPage from "./pages/checkin/Checkin-List-Page";
 import CreateCheckinPage from "./pages/checkin/Create-Checkin-Page";
+import MessageToast from "./components/Message-Toast";
+import { useSelector, useDispatch } from "react-redux";
+import { hideMessageToast } from "./store/actions/Message-Toast-Action";
+import AboutUs from "./pages/Settings/About-Us";
 
 const Protected = () => {
 	// eslint-disable-next-line
@@ -25,10 +29,18 @@ const Protected = () => {
 		localStorage.getItem("TOKEN")
 	);
 
+	const dispatch = useDispatch();
+	const toastState = useSelector((state) => state.messageToast);
+
+	const handleClose = () => {
+		dispatch(hideMessageToast());
+	};
+
 	return isAuthenticated ? (
 		<>
 			<NavBar />
 			<Outlet />
+			<MessageToast toastState={toastState} handleClose={handleClose} />
 		</>
 	) : (
 		<Navigate to="/login" />
@@ -87,12 +99,25 @@ function App() {
 							/>
 						</Route>
 					</Route>
+					<Route path="settings">
+						{/* <Route path="rooms">
+							<Route index element={<RoomListPage />} />
+							<Route path="create" element={<CreateRoomPage />} />
+							<Route
+								path="update/:id"
+								element={<UpdateRoomPage />}
+							/>
+						</Route> */}
+						<Route path="about-us">
+							<Route index element={<AboutUs />} />
+						</Route>
+					</Route>
 				</Route>
 				<Route path="/login" element={<AccessLoginPageHandler />} />
-				{/* <Route
+				<Route
 					path="*"
-					element={<Navigate to="/transaction/borrows" />}
-				/> */}
+					element={<Navigate to="/transaction/checkin" />}
+				/>
 			</Routes>
 		</BrowserRouter>
 	);

@@ -31,7 +31,7 @@ exports.authenticate = (data) => {
 							role: response.role,
 						};
 						const token = jwt.sign(data, process.env.SECRET_KEY, {
-							expiresIn: "1800s",
+							expiresIn: "86400s",
 							algorithm: "HS256",
 						});
 						resolve(token);

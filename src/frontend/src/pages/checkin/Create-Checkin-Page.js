@@ -3,9 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { createCheckin } from "../../api/Checkin";
 import { getAvailableRooms } from "../../api/Room";
 import CreateCheckinForm from "../../components/checkin/Create-Checkin-Form";
-import MessageToast from "../../components/Message-Toast";
+import { useDispatch } from "react-redux";
+import {
+	showMessageToast,
+	hideMessageToast,
+} from "../../store/actions/Message-Toast-Action";
+import { handleExpiredToken } from "../../utils/Reusable-Function";
 
 export default function CreateCheckinPage() {
+	const dispatch = useDispatch();
 	const [checkin, setCheckin] = useState({
 		lengthOfStay: 0,
 		totalCost: "",
@@ -32,12 +38,6 @@ export default function CreateCheckinPage() {
 	const [isFetching, setIsFetching] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [toastState, setToastState] = useState({
-		show: false,
-		title: "",
-		message: "",
-	});
-
 	const navigate = useNavigate();
 
 	const getRooms = async () => {
@@ -46,31 +46,19 @@ export default function CreateCheckinPage() {
 
 		setIsFetching(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: response.message,
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 200) {
 			setRooms(response.data);
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -164,15 +152,7 @@ export default function CreateCheckinPage() {
 
 		setIsLoading(false);
 		if (response.status === 401) {
-			navigate("/login", {
-				state: {
-					toastState: {
-						show: true,
-						title: "Session has expired",
-						message: "Your session has expired, please login",
-					},
-				},
-			});
+			handleExpiredToken(navigate);
 		} else if (response.status === 201) {
 			navigate("/transaction/checkin", {
 				state: {
@@ -184,19 +164,15 @@ export default function CreateCheckinPage() {
 				},
 			});
 		} else {
-			setToastState({
-				...toastState,
-				show: true,
-				title: "Failed",
-				message: response.message,
-			});
+			dispatch(
+				showMessageToast({
+					show: true,
+					title: "Failed",
+					message: response.message,
+				})
+			);
 			setTimeout(() => {
-				setToastState({
-					...toastState,
-					show: false,
-					title: "",
-					message: "",
-				});
+				dispatch(hideMessageToast());
 			}, 5000);
 		}
 	};
@@ -213,25 +189,6 @@ export default function CreateCheckinPage() {
 		},
 		title: {
 			color: "#112D4E",
-		},
-		label: {
-			color: "#3F72AF",
-		},
-		input: {
-			borderRadius: "10px",
-			borderColor: "#DBE2EF",
-			color: "#3F72AF",
-		},
-		loader: {
-			color: "#3F72AF",
-		},
-		card: {
-			border: "none",
-			borderRadius: "20px",
-			padding: "20px",
-		},
-		button: {
-			borderRadius: "15px",
 		},
 	};
 
@@ -255,10 +212,6 @@ export default function CreateCheckinPage() {
 					handleCancel={handleCancel}
 				/>
 			</div>
-			<MessageToast
-				toastState={toastState}
-				setToastState={setToastState}
-			/>
 		</div>
 	);
 }

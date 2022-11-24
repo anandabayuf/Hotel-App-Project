@@ -1,17 +1,10 @@
-import { Trash, Pencil } from "react-bootstrap-icons";
 import { Badge } from "react-bootstrap";
 import Loader from "../Loader";
 
 export default function UserListTable(props) {
 	const style = {
-		loader: {
-			color: "#3F72AF",
-		},
 		button: {
 			borderRadius: "15px",
-		},
-		iconButton: {
-			borderRadius: "50px",
 		},
 	};
 
@@ -32,7 +25,7 @@ export default function UserListTable(props) {
 						props.users.map((el, index) => {
 							return (
 								<tr key={index}>
-									<td scope="row">{el.username}</td>
+									<td>{el.username}</td>
 									<td>{el.name}</td>
 									<td className="text-center">{el.role}</td>
 									<td className="text-center">
@@ -49,7 +42,7 @@ export default function UserListTable(props) {
 									<td>
 										{props.isLoading &&
 										props.currentIndex === index ? (
-											<Loader style={style} />
+											<Loader />
 										) : (
 											<div className="row justify-content-center">
 												<div className="col-auto">
@@ -69,20 +62,20 @@ export default function UserListTable(props) {
 												<div className="col-auto">
 													<button
 														className="btn btn-warning"
-														style={style.iconButton}
+														style={style.button}
 														onClick={() =>
 															props.handleUpdateUser(
 																el._id
 															)
 														}
 													>
-														<Pencil size={16} />
+														Update
 													</button>
 												</div>
 												<div className="col-auto">
 													<button
 														className="btn btn-danger"
-														style={style.iconButton}
+														style={style.button}
 														onClick={() =>
 															props.handleClickDelete(
 																el,
@@ -90,7 +83,7 @@ export default function UserListTable(props) {
 															)
 														}
 													>
-														<Trash size={16} />
+														Delete
 													</button>
 												</div>
 											</div>
